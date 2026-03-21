@@ -22,14 +22,17 @@ canvas {
   z-index: -1;
 }
 
+/* HERO */
 .hero {
   padding: 60px 20px 30px;
 }
 
+/* TRANSPARENT LOGO */
 .logo img {
   width: 260px;
 }
 
+/* NAV */
 .nav a {
   margin: 0 12px;
   color: #60a5fa;
@@ -41,6 +44,7 @@ canvas {
   color: white;
 }
 
+/* CARDS */
 .container {
   padding: 20px;
 }
@@ -67,9 +71,21 @@ canvas {
   background-size: cover;
 }
 
-.island { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('https://images.unsplash.com/photo-1501785888041-af3ef285b470'); }
-.astra { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa'); }
-.rag { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee'); }
+/* BETTER BANNERS */
+.island {
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent),
+  url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');
+}
+
+.astra {
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent),
+  url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa');
+}
+
+.rag {
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent),
+  url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1c');
+}
 
 .content {
   padding: 15px;
@@ -137,7 +153,6 @@ canvas {
 
 <div id="servers" class="container">
 
-<!-- SERVER TEMPLATE -->
 <script>
 function serverCard(name, port, id, bannerClass) {
   return `
@@ -161,15 +176,10 @@ document.write(serverCard("🪨 Astraeos",7877,"astra","astra"));
 document.write(serverCard("🔥 Ragnarok",7977,"rag","rag"));
 </script>
 
-<!-- DISCORD -->
+<!-- DISCORD BUTTON ONLY -->
 <div class="card">
   <h2>💬 Join Our Community</h2>
   <a class="btn" href="https://discord.gg/vm8tstWJTh" target="_blank">Join Discord</a>
-
-  <iframe 
-    src="https://discord.com/widget?id=1233275757435027487&theme=dark"
-    width="100%" height="320">
-  </iframe>
 </div>
 
 </div>
@@ -193,7 +203,7 @@ function copyIP(port) {
   alert("Copied: " + text);
 }
 
-// SHOW COMMAND
+// COMMAND
 function showCommand(port) {
   document.getElementById("modal").style.display = "flex";
   document.getElementById("command").innerText =
