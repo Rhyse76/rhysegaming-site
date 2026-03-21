@@ -23,30 +23,15 @@ canvas {
 }
 
 .hero {
-  padding: 80px 20px 40px;
+  padding: 60px 20px 30px;
 }
 
-.logo {
-  font-size: 60px;
-  font-weight: bold;
-  letter-spacing: 3px;
-  background: linear-gradient(90deg, #60a5fa, #22c55e, #f97316);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.tagline {
-  color: #94a3b8;
-  margin-top: 10px;
-}
-
-/* NAV BAR */
-.nav {
-  margin-top: 20px;
+.logo img {
+  width: 260px;
 }
 
 .nav a {
-  margin: 0 10px;
+  margin: 0 12px;
   color: #60a5fa;
   text-decoration: none;
   font-weight: bold;
@@ -56,7 +41,6 @@ canvas {
   color: white;
 }
 
-/* CARDS */
 .container {
   padding: 20px;
 }
@@ -73,7 +57,6 @@ canvas {
 
 .card:hover {
   transform: scale(1.02);
-  box-shadow: 0 0 30px rgba(37,99,235,0.8);
 }
 
 .banner {
@@ -84,54 +67,55 @@ canvas {
   background-size: cover;
 }
 
-.island {
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent),
-              url('https://picsum.photos/seed/island/1000/500');
-}
-
-.astra {
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent),
-              url('https://picsum.photos/seed/astra/1000/500');
-}
-
-.rag {
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent),
-              url('https://picsum.photos/seed/rag/1000/500');
-}
+.island { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('https://images.unsplash.com/photo-1501785888041-af3ef285b470'); }
+.astra { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa'); }
+.rag { background: linear-gradient(to top, rgba(0,0,0,0.9), transparent), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee'); }
 
 .content {
   padding: 15px;
 }
 
-.status {
-  font-size: 14px;
-}
-
+.status { font-size: 14px; }
 .online { color: #22c55e; }
 .offline { color: #ef4444; }
 
 .btn {
   display: inline-block;
-  margin-top: 10px;
-  padding: 10px 22px;
+  margin: 6px;
+  padding: 10px 18px;
   background: #2563eb;
   border-radius: 8px;
   text-decoration: none;
   color: white;
+  cursor: pointer;
 }
 
-.btn:hover {
-  background: #1d4ed8;
-}
+.btn:hover { background: #1d4ed8; }
 
-/* DISCORD CARD */
-.discord {
-  padding: 20px;
+.small-btn {
+  background: #334155;
 }
 
 .footer {
   margin: 40px;
   color: #64748b;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #0f172a;
+  padding: 20px;
+  border-radius: 10px;
 }
 </style>
 </head>
@@ -141,60 +125,85 @@ canvas {
 <canvas id="particles"></canvas>
 
 <div class="hero">
-  <div class="logo">RHYSE GAMING</div>
-  <div class="tagline">ARK Survival Ascended Cluster</div>
+  <div class="logo">
+    <img src="logo.png">
+  </div>
 
   <div class="nav">
     <a href="#servers">Servers</a>
-    <a href="https://play.rhysegaming.com">Play</a>
     <a href="https://discord.gg/vm8tstWJTh" target="_blank">Discord</a>
   </div>
 </div>
 
 <div id="servers" class="container">
 
-<div class="card">
-  <div class="banner island">
-    <h2>🌍 Island</h2>
-  </div>
-  <div class="content">
-    <div id="island-status">Checking...</div>
-    <a class="btn" href="steam://connect/ark.rhysegaming.com:7777">Join Server</a>
-  </div>
-</div>
+<!-- SERVER TEMPLATE -->
+<script>
+function serverCard(name, port, id, bannerClass) {
+  return `
+  <div class="card">
+    <div class="banner ${bannerClass}">
+      <h2>${name}</h2>
+    </div>
+    <div class="content">
+      <div id="${id}-status">Checking...</div>
 
-<div class="card">
-  <div class="banner astra">
-    <h2>🪨 Astraeos</h2>
+      <a class="btn" href="steam://connect/ark.rhysegaming.com:${port}">🚀 Play Now</a>
+      <button class="btn small-btn" onclick="copyIP(${port})">📋 Copy IP</button>
+      <button class="btn small-btn" onclick="showCommand(${port})">💬 How to Join</button>
+    </div>
   </div>
-  <div class="content">
-    <div id="astra-status">Checking...</div>
-    <a class="btn" href="steam://connect/ark.rhysegaming.com:7877">Join Server</a>
-  </div>
-</div>
+  `;
+}
 
-<div class="card">
-  <div class="banner rag">
-    <h2>🔥 Ragnarok</h2>
-  </div>
-  <div class="content">
-    <div id="rag-status">Checking...</div>
-    <a class="btn" href="steam://connect/ark.rhysegaming.com:7977">Join Server</a>
-  </div>
-</div>
+document.write(serverCard("🌍 Island",7777,"island","island"));
+document.write(serverCard("🪨 Astraeos",7877,"astra","astra"));
+document.write(serverCard("🔥 Ragnarok",7977,"rag","rag"));
+</script>
 
 <!-- DISCORD -->
-<div class="card discord">
+<div class="card">
   <h2>💬 Join Our Community</h2>
-  <p>Stay connected, get updates, and chat with players</p>
   <a class="btn" href="https://discord.gg/vm8tstWJTh" target="_blank">Join Discord</a>
+
+  <iframe 
+    src="https://discord.com/widget?id=1233275757435027487&theme=dark"
+    width="100%" height="320">
+  </iframe>
 </div>
 
 </div>
 
 <div class="footer">© Rhyse Gaming</div>
 
+<!-- MODAL -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h3>Join via Console</h3>
+    <p id="command"></p>
+    <button class="btn" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
 <script>
+// COPY IP
+function copyIP(port) {
+  const text = `ark.rhysegaming.com:${port}`;
+  navigator.clipboard.writeText(text);
+  alert("Copied: " + text);
+}
+
+// SHOW COMMAND
+function showCommand(port) {
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("command").innerText =
+    `open ark.rhysegaming.com:${port}`;
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
 // SERVER STATUS
 async function checkServer(ip, port, id) {
   try {
@@ -203,22 +212,22 @@ async function checkServer(ip, port, id) {
 
     if (data.data.length > 0) {
       const s = data.data[0];
-      document.getElementById(id).innerHTML =
+      document.getElementById(id+"-status").innerHTML =
         `<span class="online">● Online</span> (${s.attributes.players}/${s.attributes.maxPlayers})`;
     } else {
-      document.getElementById(id).innerHTML =
+      document.getElementById(id+"-status").innerHTML =
         `<span class="offline">● Offline</span>`;
     }
   } catch {
-    document.getElementById(id).innerHTML =
+    document.getElementById(id+"-status").innerHTML =
       `<span class="offline">● Unknown</span>`;
   }
 }
 
 function refresh() {
-  checkServer("ark.rhysegaming.com",7777,"island-status");
-  checkServer("ark.rhysegaming.com",7877,"astra-status");
-  checkServer("ark.rhysegaming.com",7977,"rag-status");
+  checkServer("ark.rhysegaming.com",7777,"island");
+  checkServer("ark.rhysegaming.com",7877,"astra");
+  checkServer("ark.rhysegaming.com",7977,"rag");
 }
 
 refresh();
