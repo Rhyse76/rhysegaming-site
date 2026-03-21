@@ -28,50 +28,39 @@ body {
 
 h1 {
   font-size: 48px;
-  margin-bottom: 10px;
-}
-
-.tagline {
-  color: #94a3b8;
-  margin-bottom: 50px;
 }
 
 .card {
   background: rgba(255,255,255,0.05);
   border-radius: 15px;
-  padding: 30px;
+  padding: 25px;
   margin: 20px auto;
   max-width: 400px;
   box-shadow: 0 0 25px rgba(0,0,0,0.4);
-  transition: transform 0.2s;
 }
 
-.card:hover {
-  transform: translateY(-5px);
+.status {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.online {
+  color: #22c55e;
+}
+
+.offline {
+  color: #ef4444;
 }
 
 .btn {
   display: inline-block;
   margin-top: 15px;
-  padding: 14px 30px;
+  padding: 12px 25px;
   font-size: 18px;
   color: white;
   background: #2563eb;
   border-radius: 10px;
   text-decoration: none;
-  transition: 0.2s;
-}
-
-.btn:hover {
-  background: #1d4ed8;
-}
-
-.secondary {
-  background: #475569;
-}
-
-.secondary:hover {
-  background: #334155;
 }
 
 .footer {
@@ -86,26 +75,59 @@ h1 {
 
 <div class="container">
 
-  <h1>Rhyse Gaming</h1>
-  <div class="tagline">Community Servers • Smooth Gameplay • No BS</div>
+<h1>Rhyse Gaming</h1>
 
-  <div class="card">
-    <h2>🎮 ARK Cluster</h2>
-    <p>Join our ASA cluster instantly</p>
-    <a class="btn" href="https://play.rhysegaming.com">Play Now</a>
-  </div>
+<div class="card">
+  <h2>🌍 Island</h2>
+  <div id="island-status" class="status">Checking...</div>
+  <a class="btn" href="steam://connect/ark.rhysegaming.com:7777">Join Server</a>
+</div>
 
-  <div class="card">
-    <h2>💬 Discord</h2>
-    <p>Join the community</p>
-    <a class="btn secondary" href="https://discord.gg/YOURCODE">Join Discord</a>
-  </div>
+<div class="card">
+  <h2>🪨 Astraeos</h2>
+  <div id="astra-status" class="status">Checking...</div>
+  <a class="btn" href="steam://connect/ark.rhysegaming.com:7877">Join Server</a>
+</div>
 
-  <div class="footer">
-    © Rhyse Gaming
-  </div>
+<div class="card">
+  <h2>🔥 Ragnarok</h2>
+  <div id="rag-status" class="status">Checking...</div>
+  <a class="btn" href="steam://connect/ark.rhysegaming.com:7977">Join Server</a>
+</div>
+
+<div class="footer">
+© Rhyse Gaming
+</div>
 
 </div>
+
+<script>
+async function checkServer(ip, port, elementId) {
+  try {
+    const res = await fetch(`https://api.battlemetrics.com/servers?filter[search]=${ip}:${port}`);
+    const data = await res.json();
+
+    if (data.data.length > 0) {
+      const server = data.data[0];
+      const players = server.attributes.players;
+      const max = server.attributes.maxPlayers;
+
+      document.getElementById(elementId).innerHTML =
+        `<span class="online">● Online</span> (${players}/${max})`;
+    } else {
+      document.getElementById(elementId).innerHTML =
+        `<span class="offline">● Offline</span>`;
+    }
+  } catch {
+    document.getElementById(elementId).innerHTML =
+      `<span class="offline">● Unknown</span>`;
+  }
+}
+
+checkServer("ark.rhysegaming.com", 7777, "island-status");
+checkServer("ark.rhysegaming.com", 7877, "astra-status");
+checkServer("ark.rhysegaming.com", 7977, "rag-status");
+</script>
 
 </body>
 </html>
