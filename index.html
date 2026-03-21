@@ -9,25 +9,25 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(-45deg, #020617, #0f172a, #1e293b, #020617);
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+  background: url('https://images.unsplash.com/photo-1605902711622-cfb43c4437d1') no-repeat center center/cover;
   color: white;
   text-align: center;
 }
 
-@keyframes gradient {
-  0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
+.overlay {
+  background: rgba(2,6,23,0.85);
+  min-height: 100vh;
 }
 
 .container {
-  padding: 80px 20px;
+  padding: 60px 20px;
 }
 
-h1 {
-  font-size: 48px;
+.logo {
+  font-size: 50px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
 }
 
 .tagline {
@@ -36,13 +36,13 @@ h1 {
 }
 
 .card {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.06);
   border-radius: 15px;
-  padding: 25px;
+  padding: 20px;
   margin: 20px auto;
-  max-width: 400px;
-  box-shadow: 0 0 25px rgba(0,0,0,0.4);
-  transition: transform 0.2s, box-shadow 0.2s;
+  max-width: 420px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.5);
+  transition: 0.2s;
 }
 
 .card:hover {
@@ -50,30 +50,30 @@ h1 {
   box-shadow: 0 0 30px rgba(37,99,235,0.6);
 }
 
+.server-img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
 .status {
   margin-top: 10px;
   font-size: 16px;
 }
 
-.online {
-  color: #22c55e;
-}
-
-.offline {
-  color: #ef4444;
-}
+.online { color: #22c55e; }
+.offline { color: #ef4444; }
 
 .btn {
   display: inline-block;
-  margin-top: 15px;
+  margin-top: 12px;
   padding: 12px 25px;
   font-size: 18px;
   color: white;
   background: #2563eb;
   border-radius: 10px;
   text-decoration: none;
-  transition: 0.2s;
-  box-shadow: 0 0 10px rgba(37,99,235,0.5);
+  box-shadow: 0 0 12px rgba(37,99,235,0.6);
 }
 
 .btn:hover {
@@ -81,17 +81,8 @@ h1 {
   box-shadow: 0 0 20px rgba(37,99,235,1);
 }
 
-.secondary {
-  background: #475569;
-  box-shadow: none;
-}
-
-.secondary:hover {
-  background: #334155;
-}
-
 .footer {
-  margin-top: 60px;
+  margin-top: 50px;
   font-size: 14px;
   color: #64748b;
 }
@@ -100,38 +91,43 @@ h1 {
 
 <body>
 
+<div class="overlay">
 <div class="container">
 
-<h1>Rhyse Gaming</h1>
-<div class="tagline">Community Servers • Smooth Gameplay • No BS</div>
+<div class="logo">RHYSE GAMING</div>
+<div class="tagline">ASA Cluster • Smooth Gameplay • No BS</div>
 
 <div class="card">
+  <img class="server-img" src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f7/TheIsland.jpg">
   <h2>🌍 Island</h2>
   <div id="island-status" class="status">Checking...</div>
-  <a class="btn" href="steam://connect/ark.rhysegaming.com:7777">Join Server</a>
+  <a class="btn" href="steam://connect/ark.rhysegaming.com:7777">Join</a>
 </div>
 
 <div class="card">
+  <img class="server-img" src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/3/3a/Ragnarok.jpg">
   <h2>🪨 Astraeos</h2>
   <div id="astra-status" class="status">Checking...</div>
-  <a class="btn" href="steam://connect/ark.rhysegaming.com:7877">Join Server</a>
+  <a class="btn" href="steam://connect/ark.rhysegaming.com:7877">Join</a>
 </div>
 
 <div class="card">
+  <img class="server-img" src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/0/0f/RagnarokLandscape.jpg">
   <h2>🔥 Ragnarok</h2>
   <div id="rag-status" class="status">Checking...</div>
-  <a class="btn" href="steam://connect/ark.rhysegaming.com:7977">Join Server</a>
+  <a class="btn" href="steam://connect/ark.rhysegaming.com:7977">Join</a>
 </div>
 
 <div class="card">
   <h2>💬 Discord</h2>
-  <a class="btn secondary" href="https://discord.gg/vm8tstWJTh">Join Discord</a>
+  <a class="btn" href="https://discord.gg/YOURCODE">Join Community</a>
 </div>
 
 <div class="footer">
 © Rhyse Gaming
 </div>
 
+</div>
 </div>
 
 <script>
@@ -142,11 +138,8 @@ async function checkServer(ip, port, elementId) {
 
     if (data.data.length > 0) {
       const server = data.data[0];
-      const players = server.attributes.players;
-      const max = server.attributes.maxPlayers;
-
       document.getElementById(elementId).innerHTML =
-        `<span class="online">● Online</span> (${players}/${max})`;
+        `<span class="online">● Online</span> (${server.attributes.players}/${server.attributes.maxPlayers})`;
     } else {
       document.getElementById(elementId).innerHTML =
         `<span class="offline">● Offline</span>`;
@@ -164,8 +157,6 @@ function refreshAll() {
 }
 
 refreshAll();
-
-// 🔄 Auto refresh every 30 seconds
 setInterval(refreshAll, 30000);
 </script>
 
