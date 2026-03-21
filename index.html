@@ -9,71 +9,73 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #020617, #020617, #0f172a);
+  background: #020617;
   color: white;
   text-align: center;
 }
 
-.container {
-  padding: 60px 20px;
+/* HERO BANNER */
+.hero {
+  height: 300px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(2,6,23,1)),
+              url('https://picsum.photos/1600/600?random=1') center/cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.logo {
+.hero h1 {
   font-size: 50px;
-  font-weight: bold;
-  letter-spacing: 3px;
+  margin: 0;
 }
 
-.tagline {
+.hero p {
   color: #94a3b8;
-  margin-bottom: 40px;
+}
+
+/* CARDS */
+.container {
+  padding: 40px 20px;
 }
 
 .card {
-  position: relative;
   border-radius: 15px;
-  overflow: hidden;
   margin: 20px auto;
   max-width: 420px;
-  box-shadow: 0 0 25px rgba(0,0,0,0.6);
+  overflow: hidden;
+  background: #0f172a;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
   transition: 0.3s;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 0 30px rgba(37,99,235,0.8);
+  box-shadow: 0 0 25px rgba(37,99,235,0.6);
 }
 
-.server-img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
+.banner {
+  height: 180px;
+  display: flex;
+  align-items: flex-end;
+  padding: 15px;
+  background-size: cover;
 }
 
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-}
-
-.content {
-  position: absolute;
-  bottom: 15px;
-  left: 15px;
-  right: 15px;
-  text-align: left;
-}
+/* UNIQUE MAP COLORS (acts like custom banners) */
+.island { background: linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/seed/island/800/400'); }
+.astra { background: linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/seed/astra/800/400'); }
+.rag { background: linear-gradient(to top, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/seed/rag/800/400'); }
 
 h2 {
   margin: 0;
 }
 
+.content {
+  padding: 15px;
+}
+
 .status {
   font-size: 14px;
-  margin-top: 5px;
 }
 
 .online { color: #22c55e; }
@@ -82,10 +84,9 @@ h2 {
 .btn {
   display: inline-block;
   margin-top: 10px;
-  padding: 8px 18px;
-  font-size: 16px;
-  color: white;
+  padding: 10px 20px;
   background: #2563eb;
+  color: white;
   border-radius: 8px;
   text-decoration: none;
 }
@@ -95,8 +96,7 @@ h2 {
 }
 
 .footer {
-  margin-top: 50px;
-  font-size: 14px;
+  margin-top: 40px;
   color: #64748b;
 }
 </style>
@@ -104,48 +104,53 @@ h2 {
 
 <body>
 
-<div class="container">
+<!-- HERO -->
+<div class="hero">
+  <h1>RHYSE GAMING</h1>
+  <p>ARK Survival Ascended Cluster</p>
+</div>
 
-<div class="logo">RHYSE GAMING</div>
-<div class="tagline">ASA Cluster • Smooth Gameplay • No BS</div>
+<div class="container">
 
 <!-- Island -->
 <div class="card">
-  <img class="server-img" src="https://cdn.cloudflare.steamstatic.com/steam/apps/346110/ss_3.jpg">
-  <div class="overlay"></div>
-  <div class="content">
+  <div class="banner island">
     <h2>🌍 Island</h2>
+  </div>
+  <div class="content">
     <div id="island-status" class="status">Checking...</div>
-    <a class="btn" href="steam://connect/ark.rhysegaming.com:7777">Join</a>
+    <a class="btn" href="steam://connect/ark.rhysegaming.com:7777">Join Server</a>
   </div>
 </div>
 
 <!-- Astraeos -->
 <div class="card">
-  <img class="server-img" src="https://cdn.cloudflare.steamstatic.com/steam/apps/346110/ss_5.jpg">
-  <div class="overlay"></div>
-  <div class="content">
+  <div class="banner astra">
     <h2>🪨 Astraeos</h2>
+  </div>
+  <div class="content">
     <div id="astra-status" class="status">Checking...</div>
-    <a class="btn" href="steam://connect/ark.rhysegaming.com:7877">Join</a>
+    <a class="btn" href="steam://connect/ark.rhysegaming.com:7877">Join Server</a>
   </div>
 </div>
 
 <!-- Ragnarok -->
 <div class="card">
-  <img class="server-img" src="https://cdn.cloudflare.steamstatic.com/steam/apps/346110/ss_6.jpg">
-  <div class="overlay"></div>
-  <div class="content">
+  <div class="banner rag">
     <h2>🔥 Ragnarok</h2>
+  </div>
+  <div class="content">
     <div id="rag-status" class="status">Checking...</div>
-    <a class="btn" href="steam://connect/ark.rhysegaming.com:7977">Join</a>
+    <a class="btn" href="steam://connect/ark.rhysegaming.com:7977">Join Server</a>
   </div>
 </div>
 
 <!-- Discord -->
-<div class="card" style="padding:20px;">
-  <h2>💬 Discord</h2>
-  <a class="btn" href="https://discord.gg/YOURCODE">Join Community</a>
+<div class="card">
+  <div class="content">
+    <h2>💬 Discord</h2>
+    <a class="btn" href="https://discord.gg/YOURCODE">Join Community</a>
+  </div>
 </div>
 
 <div class="footer">
@@ -161,9 +166,9 @@ async function checkServer(ip, port, elementId) {
     const data = await res.json();
 
     if (data.data.length > 0) {
-      const server = data.data[0];
+      const s = data.data[0];
       document.getElementById(elementId).innerHTML =
-        `<span class="online">● Online</span> (${server.attributes.players}/${server.attributes.maxPlayers})`;
+        `<span class="online">● Online</span> (${s.attributes.players}/${s.attributes.maxPlayers})`;
     } else {
       document.getElementById(elementId).innerHTML =
         `<span class="offline">● Offline</span>`;
