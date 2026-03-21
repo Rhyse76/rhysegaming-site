@@ -1,3 +1,7 @@
+🎨 Fancy Landing Page + Live Status (FULL CODE)
+
+👉 Replace EVERYTHING in index.html with this:
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,6 +34,11 @@ h1 {
   font-size: 48px;
 }
 
+.tagline {
+  color: #94a3b8;
+  margin-bottom: 40px;
+}
+
 .card {
   background: rgba(255,255,255,0.05);
   border-radius: 15px;
@@ -37,6 +46,11 @@ h1 {
   margin: 20px auto;
   max-width: 400px;
   box-shadow: 0 0 25px rgba(0,0,0,0.4);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
 }
 
 .status {
@@ -61,6 +75,19 @@ h1 {
   background: #2563eb;
   border-radius: 10px;
   text-decoration: none;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background: #1d4ed8;
+}
+
+.secondary {
+  background: #475569;
+}
+
+.secondary:hover {
+  background: #334155;
 }
 
 .footer {
@@ -76,6 +103,7 @@ h1 {
 <div class="container">
 
 <h1>Rhyse Gaming</h1>
+<div class="tagline">Community Servers • Smooth Gameplay • No BS</div>
 
 <div class="card">
   <h2>🌍 Island</h2>
@@ -93,6 +121,11 @@ h1 {
   <h2>🔥 Ragnarok</h2>
   <div id="rag-status" class="status">Checking...</div>
   <a class="btn" href="steam://connect/ark.rhysegaming.com:7977">Join Server</a>
+</div>
+
+<div class="card">
+  <h2>💬 Discord</h2>
+  <a class="btn secondary" href="https://discord.gg/YOURCODE">Join Discord</a>
 </div>
 
 <div class="footer">
