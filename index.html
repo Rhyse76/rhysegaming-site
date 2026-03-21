@@ -22,17 +22,10 @@ canvas {
   z-index: -1;
 }
 
-/* HERO */
-.hero {
-  padding: 60px 20px 30px;
-}
+.hero { padding: 60px 20px 30px; }
 
-/* TRANSPARENT LOGO */
-.logo img {
-  width: 260px;
-}
+.logo img { width: 260px; }
 
-/* NAV */
 .nav a {
   margin: 0 12px;
   color: #60a5fa;
@@ -40,14 +33,9 @@ canvas {
   font-weight: bold;
 }
 
-.nav a:hover {
-  color: white;
-}
+.nav a:hover { color: white; }
 
-/* CARDS */
-.container {
-  padding: 20px;
-}
+.container { padding: 20px; }
 
 .card {
   max-width: 600px;
@@ -59,9 +47,7 @@ canvas {
   transition: 0.3s;
 }
 
-.card:hover {
-  transform: scale(1.02);
-}
+.card:hover { transform: scale(1.02); }
 
 .banner {
   height: 200px;
@@ -71,7 +57,6 @@ canvas {
   background-size: cover;
 }
 
-/* BETTER BANNERS */
 .island {
   background: linear-gradient(to top, rgba(0,0,0,0.9), transparent),
   url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');
@@ -87,9 +72,7 @@ canvas {
   url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1c');
 }
 
-.content {
-  padding: 15px;
-}
+.content { padding: 15px; }
 
 .status { font-size: 14px; }
 .online { color: #22c55e; }
@@ -108,14 +91,9 @@ canvas {
 
 .btn:hover { background: #1d4ed8; }
 
-.small-btn {
-  background: #334155;
-}
+.small-btn { background: #334155; }
 
-.footer {
-  margin: 40px;
-  color: #64748b;
-}
+.footer { margin: 40px; color: #64748b; }
 
 /* MODAL */
 .modal {
@@ -154,7 +132,7 @@ canvas {
 <div id="servers" class="container">
 
 <script>
-function serverCard(name, port, id, bannerClass) {
+function serverCard(name, id, bannerClass, port) {
   return `
   <div class="card">
     <div class="banner ${bannerClass}">
@@ -171,12 +149,12 @@ function serverCard(name, port, id, bannerClass) {
   `;
 }
 
-document.write(serverCard("🌍 Island",7777,"island","island"));
-document.write(serverCard("🪨 Astraeos",7877,"astra","astra"));
-document.write(serverCard("🔥 Ragnarok",7977,"rag","rag"));
+document.write(serverCard("🌍 Island","island","island",7777));
+document.write(serverCard("🪨 Astraeos","astra","astra",7877));
+document.write(serverCard("🔥 Ragnarok","rag","rag",7977));
 </script>
 
-<!-- DISCORD BUTTON ONLY -->
+<!-- DISCORD -->
 <div class="card">
   <h2>💬 Join Our Community</h2>
   <a class="btn" href="https://discord.gg/vm8tstWJTh" target="_blank">Join Discord</a>
@@ -214,34 +192,43 @@ function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
 
-// SERVER STATUS
-async function checkServer(ip, port, id) {
+// ✅ FIXED SERVER STATUS (BattleMetrics ID)
+async function checkServer(serverId, elementId) {
   try {
-    const res = await fetch(`https://api.battlemetrics.com/servers?filter[search]=${ip}:${port}`);
+    const res = await fetch(`https://api.battlemetrics.com/servers/${serverId}`);
     const data = await res.json();
 
-    if (data.data.length > 0) {
-      const s = data.data[0];
-      document.getElementById(id+"-status").innerHTML =
-        `<span class="online">● Online</span> (${s.attributes.players}/${s.attributes.maxPlayers})`;
-    } else {
-      document.getElementById(id+"-status").innerHTML =
+    const s = data.data.attributes;
+
+    const lastSeen = new Date(s.updatedAt);
+    const now = new Date();
+    const diffMinutes = (now - lastSeen) / 60000;
+
+    if (diffMinutes > 5) {
+      document.getElementById(elementId).innerHTML =
         `<span class="offline">● Offline</span>`;
+      return;
     }
+
+    document.getElementById(elementId).innerHTML =
+      `<span class="online">● Online</span> (${s.players}/${s.maxPlayers})`;
+
   } catch {
-    document.getElementById(id+"-status").innerHTML =
-      `<span class="offline">● Unknown</span>`;
+    document.getElementById(elementId).innerHTML =
+      `<span class="offline">● Offline</span>`;
   }
 }
 
 function refresh() {
-  checkServer("ark.rhysegaming.com",7777,"island");
-  checkServer("ark.rhysegaming.com",7877,"astra");
-  checkServer("ark.rhysegaming.com",7977,"rag");
+  checkServer("38310501", "astra-status"); // Astraeos
+
+  // 👉 ADD THESE WHEN YOU HAVE THEM
+  // checkServer("ISLAND_ID", "island-status");
+  // checkServer("RAG_ID", "rag-status");
 }
 
 refresh();
-setInterval(refresh,30000);
+setInterval(refresh, 30000);
 
 // PARTICLES
 const canvas = document.getElementById('particles');
