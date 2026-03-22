@@ -24,7 +24,7 @@ canvas {
   pointer-events: none;
 }
 
-/* LOGO GLOW */
+/* LOGO */
 .logo img {
   width: 260px;
   margin-top: 20px;
@@ -32,8 +32,8 @@ canvas {
 }
 
 @keyframes glowPulse {
-  0%   { filter: drop-shadow(0 0 10px rgba(59,130,246,0.5)); }
-  50%  { filter: drop-shadow(0 0 30px rgba(59,130,246,1)); }
+  0% { filter: drop-shadow(0 0 10px rgba(59,130,246,0.5)); }
+  50% { filter: drop-shadow(0 0 30px rgba(59,130,246,1)); }
   100% { filter: drop-shadow(0 0 10px rgba(59,130,246,0.5)); }
 }
 
@@ -95,12 +95,11 @@ canvas {
   color:#22c55e;
   text-shadow: 0 0 8px #22c55e;
 }
-
 .offline {
   color:#ef4444;
 }
 
-/* 🔥 PLAYER BAR */
+/* PLAYER BAR */
 .bar {
   width: 80%;
   height: 8px;
@@ -256,7 +255,7 @@ function toast(msg){
   setTimeout(()=>t.style.display="none",2000);
 }
 
-// STATUS (🔥 UPDATED WITH BAR)
+// STATUS
 async function check(id,el){
  try{
   const r=await fetch(`https://api.battlemetrics.com/servers/${id}`);
@@ -286,12 +285,19 @@ function refresh(){
 refresh();
 setInterval(refresh,30000);
 
-// PARTICLES
+/* 🌌 PARTICLES WITH MOUSE INTERACTION */
 const c=document.getElementById('particles');
 if(c){
   const x=c.getContext('2d');
   c.width=innerWidth;
   c.height=innerHeight;
+
+  let mouse = {x:null,y:null};
+
+  window.addEventListener("mousemove", e=>{
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
 
   let p=[];
   for(let i=0;i<100;i++){
@@ -307,17 +313,33 @@ if(c){
     x.clearRect(0,0,c.width,c.height);
     p.forEach(a=>{
       a.y+=a.v;
+
+      // 🧠 mouse push effect
+      if(mouse.x){
+        let dx = a.x - mouse.x;
+        let dy = a.y - mouse.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+
+        if(dist < 100){
+          a.x += dx * 0.02;
+          a.y += dy * 0.02;
+        }
+      }
+
       if(a.y>c.height){
         a.y=0;
         a.x=Math.random()*c.width;
       }
+
       x.beginPath();
       x.arc(a.x,a.y,a.s,0,6.28);
       x.fillStyle="#60a5fa";
       x.fill();
     });
+
     requestAnimationFrame(draw);
   }
+
   draw();
 }
 
