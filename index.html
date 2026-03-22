@@ -113,7 +113,7 @@ canvas {
   <div class="modal-content">
     <h3>Join Server</h3>
     <p id="command"></p>
-    <button class="btn" onclick="closeModal()">Close</button>
+    <button class="btn" id="closeModal">Close</button>
   </div>
 </div>
 
@@ -124,9 +124,11 @@ return `
 <div class="banner ${cls}"><h2>${name}</h2></div>
 <div>
 <div id="${id}-status">Checking...</div>
-<button class="btn" onclick="launch(${port})">🚀 Play Now</button>
-<button class="btn" onclick="copyIP(${port})">📋 Copy</button>
-<button class="btn" onclick="showCommand(${port})">💬 How</button>
+
+<button class="btn play" data-port="${port}">🚀 Play Now</button>
+<button class="btn copy" data-port="${port}">📋 Copy</button>
+<button class="btn how" data-port="${port}">💬 How</button>
+
 </div>
 </div>`;
 }
@@ -136,14 +138,31 @@ serverCard("🌍 Island","island","island",7777)+
 serverCard("🪨 Astraeos","astra","astra",7877)+
 serverCard("🔥 Ragnarok","rag","rag",7977);
 
-// SMART LAUNCH
+// BUTTON EVENTS (FIXED)
+document.querySelectorAll(".play").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    launch(btn.dataset.port);
+  });
+});
+
+document.querySelectorAll(".copy").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    copyIP(btn.dataset.port);
+  });
+});
+
+document.querySelectorAll(".how").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    showCommand(btn.dataset.port);
+  });
+});
+
+document.getElementById("closeModal").addEventListener("click", closeModal);
+
+// LAUNCH
 function launch(port){
   const url=`steam://connect/ark.rhysegaming.com:${port}`;
-
-  // try steam
   window.location.href=url;
-
-  // fallback
   setTimeout(()=>showCommand(port),1500);
 }
 
@@ -168,9 +187,11 @@ function showCommand(port){
   document.getElementById("command").innerText=
   `Press ~ in ARK and paste:\nopen ark.rhysegaming.com:${port}`;
 }
-function closeModal(){document.getElementById("modal").style.display="none";}
+function closeModal(){
+  document.getElementById("modal").style.display="none";
+}
 
-// STATUS FIX
+// STATUS
 async function checkServer(id,el){
  try{
   const r=await fetch(`https://api.battlemetrics.com/servers/${id}`);
@@ -227,4 +248,3 @@ draw();
 
 </body>
 </html>
-
