@@ -105,7 +105,7 @@ canvas {
   opacity: .7;
 }
 
-/* TOAST */
+/* 🔥 FIXED TOAST */
 .toast {
   position: fixed;
   bottom:20px;
@@ -115,6 +115,8 @@ canvas {
   padding:10px 20px;
   border-radius:6px;
   display:none;
+  z-index:10000;
+  opacity: 1;
 }
 
 /* MODAL */
@@ -191,11 +193,10 @@ servers.forEach(s=>{
   how.className = "btn";
   how.innerText = "🎮 How to Join";
 
-  // 🔥 AUTO COPY + MODAL
   how.onclick = () => {
     const command = `open ark.rhysegaming.com:${s.port}`;
     navigator.clipboard.writeText(command);
-    toast("Command copied!");
+    toast("✅ Command copied!");
     showModal(s.port);
   };
 
@@ -227,12 +228,19 @@ window.joinDiscord = function(){
   window.open("https://discord.gg/xJM3Nkce8Y","_blank");
 }
 
-// TOAST
+// 🔥 FIXED TOAST FUNCTION
 function toast(msg){
   const t=document.getElementById("toast");
-  t.innerText=msg;
-  t.style.display="block";
-  setTimeout(()=>t.style.display="none",2000);
+
+  t.innerText = msg;
+  t.style.display = "block";
+
+  // force re-trigger
+  void t.offsetWidth;
+
+  setTimeout(()=>{
+    t.style.display = "none";
+  },2000);
 }
 
 // STATUS
