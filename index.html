@@ -25,12 +25,7 @@ canvas {
 
 .logo img {
   width: 260px;
-  animation: glow 2.5s infinite alternate;
-}
-
-@keyframes glow {
-  from { filter: drop-shadow(0 0 5px #3b82f6); }
-  to { filter: drop-shadow(0 0 25px #60a5fa); }
+  margin-top: 20px;
 }
 
 .card {
@@ -39,7 +34,6 @@ canvas {
   border-radius: 15px;
   background: #0f172a;
   overflow: hidden;
-  box-shadow: 0 0 25px rgba(0,0,0,0.6);
 }
 
 .banner {
@@ -50,9 +44,9 @@ canvas {
   background-size: cover;
 }
 
-.island { background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470'); }
-.astra { background: url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa'); }
-.rag { background: url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1c'); }
+.island { background:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470'); }
+.astra { background:url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa'); }
+.rag { background:url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1c'); }
 
 .btn {
   margin: 6px;
@@ -62,51 +56,36 @@ canvas {
   color: white;
   cursor: pointer;
   border: none;
-  transition: 0.2s;
 }
 
-.btn:hover {
-  background: #1d4ed8;
-  transform: scale(1.05);
-}
-
-.online { color: #22c55e; }
-.offline { color: #ef4444; }
+.online { color:#22c55e; }
+.offline { color:#ef4444; }
 
 .toast {
   position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1e293b;
-  padding: 12px 22px;
-  border-radius: 8px;
-  display: none;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#1e293b;
+  padding:10px 20px;
+  border-radius:6px;
+  display:none;
 }
 
 .modal {
-  display: none;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.85);
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(6px);
-  z-index: 999;
+  display:none;
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.85);
+  justify-content:center;
+  align-items:center;
 }
 
 .modal-content {
-  background: #0f172a;
-  padding: 25px;
-  border-radius: 12px;
-  animation: pop 0.2s ease forwards;
-  box-shadow: 0 0 30px rgba(96,165,250,0.7);
-}
-
-@keyframes pop {
-  from { transform: scale(0.9); }
-  to { transform: scale(1); }
+  background:#0f172a;
+  padding:20px;
+  border-radius:10px;
 }
 </style>
 </head>
@@ -127,7 +106,7 @@ canvas {
   <div class="modal-content">
     <h2>🎮 Join Server</h2>
     <p id="command"></p>
-    <button class="btn" id="closeModal">Close</button>
+    <button class="btn" onclick="closeModal()">Close</button>
   </div>
 </div>
 
@@ -141,8 +120,9 @@ const servers = [
 ];
 
 const container = document.getElementById("servers");
+container.innerHTML = "";
 
-// BUILD UI
+// BUILD UI (CLEAN)
 servers.forEach(s=>{
   const card = document.createElement("div");
   card.className = "card";
@@ -151,17 +131,25 @@ servers.forEach(s=>{
     <div class="banner ${s.id}"><h2>${s.name}</h2></div>
     <div>
       <div id="${s.id}-status">Checking...</div>
-
-      <button class="btn">🚀 Play</button>
-      <button class="btn">📋 Copy</button>
-      <button class="btn">💬 How</button>
     </div>
   `;
 
-  const [playBtn, copyBtn, howBtn] = card.querySelectorAll("button");
+  const btnContainer = document.createElement("div");
+
+  const play = document.createElement("button");
+  play.className = "btn";
+  play.innerText = "🚀 Play";
+
+  const copy = document.createElement("button");
+  copy.className = "btn";
+  copy.innerText = "📋 Copy";
+
+  const how = document.createElement("button");
+  how.className = "btn";
+  how.innerText = "💬 How";
 
   // 🚀 PLAY
-  playBtn.onclick = () => {
+  play.onclick = () => {
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
     iframe.src = `steam://connect/ark.rhysegaming.com:${s.port}`;
@@ -171,27 +159,30 @@ servers.forEach(s=>{
   };
 
   // 📋 COPY
-  copyBtn.onclick = () => {
+  copy.onclick = () => {
     const text = `ark.rhysegaming.com:${s.port}`;
     navigator.clipboard.writeText(text);
     toast(`Copied ${text}`);
   };
 
   // 💬 HOW
-  howBtn.onclick = () => {
+  how.onclick = () => {
     showModal(s.port);
   };
 
+  btnContainer.appendChild(play);
+  btnContainer.appendChild(copy);
+  btnContainer.appendChild(how);
+
+  card.appendChild(btnContainer);
   container.appendChild(card);
 });
 
 // MODAL
 function showModal(port){
-  const modal = document.getElementById("modal");
-  const command = document.getElementById("command");
-
-  modal.style.display = "flex";
-  command.innerText = `Press ~ in ARK and paste:\nopen ark.rhysegaming.com:${port}`;
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("command").innerText =
+    `Press ~ in ARK and paste:\nopen ark.rhysegaming.com:${port}`;
 }
 
 window.closeModal = function(){
@@ -214,9 +205,9 @@ async function check(id,el){
   const s=d.data.attributes;
 
   document.getElementById(el).innerHTML =
-  s.status==="online"
-  ? `<span class="online">Online (${s.players})</span>`
-  : `<span class="offline">Offline</span>`;
+    s.status==="online"
+    ? `<span class="online">Online (${s.players})</span>`
+    : `<span class="offline">Offline</span>`;
  }catch{
   document.getElementById(el).innerHTML=`<span class="offline">Offline</span>`;
  }
@@ -230,6 +221,33 @@ function refresh(){
 
 refresh();
 setInterval(refresh,30000);
+
+// PARTICLES
+const c=document.getElementById('particles');
+if(c){
+  const x=c.getContext('2d');
+  c.width=innerWidth;
+  c.height=innerHeight;
+
+  let p=[];
+  for(let i=0;i<80;i++){
+    p.push({x:Math.random()*c.width,y:Math.random()*c.height,s:Math.random()*2,v:Math.random()});
+  }
+
+  function draw(){
+    x.clearRect(0,0,c.width,c.height);
+    p.forEach(a=>{
+      a.y+=a.v;
+      if(a.y>c.height)a.y=0;
+      x.beginPath();
+      x.arc(a.x,a.y,a.s,0,6.28);
+      x.fillStyle="#60a5fa";
+      x.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
 
 });
 </script>
