@@ -23,9 +23,15 @@ canvas {
   z-index: -1;
 }
 
+/* 🔥 LOGO GLOW */
 .logo img {
   width: 260px;
   margin-top: 20px;
+  filter: drop-shadow(0 0 15px rgba(59,130,246,0.6));
+  transition: 0.3s;
+}
+.logo img:hover {
+  filter: drop-shadow(0 0 30px rgba(59,130,246,1));
 }
 
 .card {
@@ -56,6 +62,20 @@ canvas {
   color: white;
   cursor: pointer;
   border: none;
+  transition: 0.2s;
+}
+.btn:hover {
+  background: #3b82f6;
+  box-shadow: 0 0 10px #3b82f6;
+}
+
+/* 🎮 DISCORD BUTTON */
+.discord {
+  background: #5865F2;
+}
+.discord:hover {
+  background: #6d78ff;
+  box-shadow: 0 0 12px #5865F2;
 }
 
 .online { color:#22c55e; }
@@ -103,6 +123,11 @@ canvas {
   <img src="logo.png">
 </div>
 
+<!-- 🔗 DISCORD -->
+<div style="margin-top:10px;">
+  <button class="btn discord" onclick="joinDiscord()">Join Discord</button>
+</div>
+
 <div id="servers"></div>
 
 <div id="toast" class="toast"></div>
@@ -125,7 +150,6 @@ const servers = [
 ];
 
 const container = document.getElementById("servers");
-container.innerHTML = "";
 
 // BUILD UI
 servers.forEach(s=>{
@@ -141,36 +165,24 @@ servers.forEach(s=>{
 
   const btnContainer = document.createElement("div");
 
-  const play = document.createElement("button");
-  play.className = "btn";
-  play.innerText = "🚀 Play";
-
   const copy = document.createElement("button");
   copy.className = "btn";
-  copy.innerText = "📋 Copy";
+  copy.innerText = "📋 Copy IP";
 
   const how = document.createElement("button");
   how.className = "btn";
-  how.innerText = "💬 How";
+  how.innerText = "💬 How to Join";
 
-  // 🚀 PLAY (FIXED — NO MODAL)
-  play.onclick = () => {
-    window.location.href = `steam://connect/ark.rhysegaming.com:${s.port}`;
-  };
-
-  // 📋 COPY
   copy.onclick = () => {
     const text = `ark.rhysegaming.com:${s.port}`;
     navigator.clipboard.writeText(text);
     toast(`Copied ${text}`);
   };
 
-  // 💬 HOW
   how.onclick = () => {
     showModal(s.port);
   };
 
-  btnContainer.appendChild(play);
   btnContainer.appendChild(copy);
   btnContainer.appendChild(how);
 
@@ -189,15 +201,20 @@ function showModal(port){
 open ark.rhysegaming.com:${port}`;
 }
 
-// CLOSE MODAL
+// CLOSE
 window.closeModal = function(){
   document.getElementById("modal").style.display = "none";
 }
 
-// CLICK OUTSIDE TO CLOSE
+// CLICK OUTSIDE CLOSE
 document.getElementById("modal").onclick = (e) => {
   if (e.target.id === "modal") closeModal();
 };
+
+// 🔗 DISCORD (YOUR LINK ADDED)
+window.joinDiscord = function(){
+  window.open("https://discord.gg/xJM3Nkce8Y", "_blank");
+}
 
 // TOAST
 function toast(msg){
