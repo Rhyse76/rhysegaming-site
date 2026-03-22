@@ -235,7 +235,7 @@ function toast(msg){
 // 🔥 NEW API STATUS SYSTEM
 async function check(name, el){
  try{
-  const r = await fetch(`http://192.168.216.193:3000/status/${name}`);
+  const r = await fetch(`https://animated-aims-fleece-among.trycloudflare.com/status/${name}`);
   const s = await r.json();
 
   const card = document.getElementById(el.replace("-status","-card"));
