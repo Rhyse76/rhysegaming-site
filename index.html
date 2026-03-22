@@ -118,6 +118,8 @@ canvas {
 </div>
 
 <script>
+window.onload = function(){
+
 function serverCard(name,id,cls,port){
 return `
 <div class="card">
@@ -138,7 +140,7 @@ serverCard("🌍 Island","island","island",7777)+
 serverCard("🪨 Astraeos","astra","astra",7877)+
 serverCard("🔥 Ragnarok","rag","rag",7977);
 
-// BUTTON EVENTS (FIXED)
+// EVENTS
 document.querySelectorAll(".play").forEach(btn=>{
   btn.addEventListener("click",()=>{
     launch(btn.dataset.port);
@@ -159,11 +161,20 @@ document.querySelectorAll(".how").forEach(btn=>{
 
 document.getElementById("closeModal").addEventListener("click", closeModal);
 
-// LAUNCH
+// 🚀 FIXED LAUNCH
 function launch(port){
-  const url=`steam://connect/ark.rhysegaming.com:${port}`;
-  window.location.href=url;
-  setTimeout(()=>showCommand(port),1500);
+  const url = `steam://connect/ark.rhysegaming.com:${port}`;
+
+  // Try Steam via iframe (non-blocking)
+  const iframe = document.createElement("iframe");
+  iframe.style.display = "none";
+  iframe.src = url;
+  document.body.appendChild(iframe);
+
+  // Always show fallback
+  setTimeout(() => {
+    showCommand(port);
+  }, 1000);
 }
 
 // COPY
@@ -181,12 +192,16 @@ function toast(msg){
   setTimeout(()=>t.style.display="none",2000);
 }
 
-// MODAL
+// 💬 FIXED MODAL
 function showCommand(port){
-  document.getElementById("modal").style.display="flex";
-  document.getElementById("command").innerText=
+  const modal = document.getElementById("modal");
+  const command = document.getElementById("command");
+
+  modal.style.display="flex";
+  command.innerText =
   `Press ~ in ARK and paste:\nopen ark.rhysegaming.com:${port}`;
 }
+
 function closeModal(){
   document.getElementById("modal").style.display="none";
 }
@@ -215,6 +230,7 @@ function refresh(){
  checkServer("38356867","astra-status");
  checkServer("38381239","rag-status");
 }
+
 refresh();
 setInterval(refresh,30000);
 
@@ -244,6 +260,8 @@ function draw(){
  requestAnimationFrame(draw);
 }
 draw();
+
+};
 </script>
 
 </body>
