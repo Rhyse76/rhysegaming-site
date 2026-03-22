@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rhyse Gaming</title>
 
+<!-- FAVICON -->
+<link rel="icon" href="logo.png">
+
 <style>
 body {
   margin: 0;
@@ -24,7 +27,16 @@ canvas {
 
 .hero { padding: 60px 20px 30px; }
 
-.logo img { width: 260px; }
+.logo img {
+  width: 260px;
+  filter: drop-shadow(0 0 10px #3b82f6);
+  animation: glow 2.5s infinite alternate;
+}
+
+@keyframes glow {
+  from { filter: drop-shadow(0 0 5px #3b82f6); }
+  to { filter: drop-shadow(0 0 25px #60a5fa); }
+}
 
 .nav a {
   margin: 0 12px;
@@ -74,7 +86,6 @@ canvas {
 
 .content { padding: 15px; }
 
-.status { font-size: 14px; }
 .online { color: #22c55e; }
 .offline { color: #ef4444; }
 
@@ -176,7 +187,8 @@ function copyIP(port) {
   navigator.clipboard.writeText(text);
   alert("Copied: " + text);
 }
- function launchSteam(port) {
+
+function launchSteam(port) {
   window.location.href = `steam://connect/ark.rhysegaming.com:${port}`;
 }
 
@@ -190,18 +202,14 @@ function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
 
+// ✅ FIXED SERVER STATUS
 async function checkServer(serverId, elementId) {
   try {
     const res = await fetch(`https://api.battlemetrics.com/servers/${serverId}`);
     const data = await res.json();
-
     const s = data.data.attributes;
 
-    const lastSeen = new Date(s.updatedAt);
-    const now = new Date();
-    const diffMinutes = (now - lastSeen) / 60000;
-
-    if (diffMinutes > 5) {
+    if (s.status !== "online") {
       document.getElementById(elementId).innerHTML =
         `<span class="offline">● Offline</span>`;
       return;
@@ -225,7 +233,7 @@ function refresh() {
 refresh();
 setInterval(refresh, 30000);
 
-// PARTICLES
+// ✨ IMPROVED PARTICLES
 const canvas = document.getElementById('particles');
 const ctx = canvas.getContext('2d');
 
@@ -234,18 +242,17 @@ canvas.height = window.innerHeight;
 
 let particles = [];
 
-for (let i = 0; i < 80; i++) {
+for (let i = 0; i < 100; i++) {
   particles.push({
     x: Math.random()*canvas.width,
     y: Math.random()*canvas.height,
     size: Math.random()*2,
-    speed: Math.random()*0.5
+    speed: Math.random()*0.7
   });
 }
 
 function animate() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle = "white";
 
   particles.forEach(p=>{
     p.y += p.speed;
@@ -253,6 +260,9 @@ function animate() {
 
     ctx.beginPath();
     ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    ctx.fillStyle = "rgba(96,165,250,0.8)";
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "#60a5fa";
     ctx.fill();
   });
 
