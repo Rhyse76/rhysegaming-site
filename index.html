@@ -140,7 +140,7 @@ function serverCard(name, id, bannerClass, port) {
     <div class="content">
       <div id="${id}-status">Checking...</div>
 
-      <a class="btn" href="steam://connect/ark.rhysegaming.com:${port}">🚀 Play Now</a>
+      <a class="btn" href="#" onclick="launchSteam(${port})">🚀 Play Now</a>
       <button class="btn small-btn" onclick="copyIP(${port})">📋 Copy IP</button>
       <button class="btn small-btn" onclick="showCommand(${port})">💬 How to Join</button>
     </div>
@@ -175,6 +175,9 @@ function copyIP(port) {
   const text = `ark.rhysegaming.com:${port}`;
   navigator.clipboard.writeText(text);
   alert("Copied: " + text);
+}
+ function launchSteam(port) {
+  window.location.href = `steam://connect/ark.rhysegaming.com:${port}`;
 }
 
 function showCommand(port) {
