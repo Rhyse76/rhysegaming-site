@@ -95,7 +95,6 @@ canvas {
 
 .footer { margin: 40px; color: #64748b; }
 
-/* MODAL */
 .modal {
   display: none;
   position: fixed;
@@ -154,7 +153,6 @@ document.write(serverCard("🪨 Astraeos","astra","astra",7877));
 document.write(serverCard("🔥 Ragnarok","rag","rag",7977));
 </script>
 
-<!-- DISCORD -->
 <div class="card">
   <h2>💬 Join Our Community</h2>
   <a class="btn" href="https://discord.gg/vm8tstWJTh" target="_blank">Join Discord</a>
@@ -164,7 +162,6 @@ document.write(serverCard("🔥 Ragnarok","rag","rag",7977));
 
 <div class="footer">© Rhyse Gaming</div>
 
-<!-- MODAL -->
 <div id="modal" class="modal">
   <div class="modal-content">
     <h3>Join via Console</h3>
@@ -174,14 +171,12 @@ document.write(serverCard("🔥 Ragnarok","rag","rag",7977));
 </div>
 
 <script>
-// COPY IP
 function copyIP(port) {
   const text = `ark.rhysegaming.com:${port}`;
   navigator.clipboard.writeText(text);
   alert("Copied: " + text);
 }
 
-// COMMAND
 function showCommand(port) {
   document.getElementById("modal").style.display = "flex";
   document.getElementById("command").innerText =
@@ -192,7 +187,6 @@ function closeModal() {
   document.getElementById("modal").style.display = "none";
 }
 
-// ✅ FIXED SERVER STATUS (BattleMetrics ID)
 async function checkServer(serverId, elementId) {
   try {
     const res = await fetch(`https://api.battlemetrics.com/servers/${serverId}`);
@@ -220,11 +214,9 @@ async function checkServer(serverId, elementId) {
 }
 
 function refresh() {
-  checkServer("38310501", "astra-status"); // Astraeos
-
-  // 👉 ADD THESE WHEN YOU HAVE THEM
-  // checkServer("ISLAND_ID", "island-status");
-  // checkServer("RAG_ID", "rag-status");
+  checkServer("38310501", "island-status");
+  checkServer("38356867", "astra-status");
+  checkServer("38381239", "rag-status");
 }
 
 refresh();
