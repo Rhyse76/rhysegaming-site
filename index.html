@@ -85,7 +85,6 @@ canvas {
 .online { color:#22c55e; }
 .offline { color:#ef4444; }
 
-/* PLAYER BAR */
 .bar {
   width: 80%;
   height: 8px;
@@ -98,16 +97,14 @@ canvas {
 .fill {
   height: 100%;
   background: linear-gradient(90deg,#22c55e,#4ade80);
-  transition: width .5s;
+  transition: .5s;
 }
 
-/* PING */
 .ping {
   font-size: 12px;
   opacity: .7;
 }
 
-/* MODAL */
 .modal {
   display:none;
   position:fixed;
@@ -123,6 +120,7 @@ canvas {
   background:#0f172a;
   padding:25px;
   border-radius:10px;
+  max-width:400px;
 }
 </style>
 </head>
@@ -143,7 +141,7 @@ canvas {
 
 <div id="modal" class="modal">
   <div class="modal-content">
-    <h2>🎮 Join Server</h2>
+    <h2>🎮 How to Join</h2>
     <p id="command"></p>
     <button class="btn" onclick="closeModal()">Close</button>
   </div>
@@ -180,11 +178,7 @@ servers.forEach(s=>{
 
   const how = document.createElement("button");
   how.className = "btn";
-  how.innerText = "💬 How";
-
-  const quick = document.createElement("button");
-  quick.className = "btn";
-  quick.innerText = "🎮 Quick Join";
+  how.innerText = "🎮 How to Join";
 
   copy.onclick = () => {
     const text = `ark.rhysegaming.com:${s.port}`;
@@ -193,11 +187,8 @@ servers.forEach(s=>{
 
   how.onclick = () => showModal(s.port);
 
-  quick.onclick = () => showModal(s.port);
-
   btnContainer.appendChild(copy);
   btnContainer.appendChild(how);
-  btnContainer.appendChild(quick);
 
   card.appendChild(btnContainer);
   container.appendChild(card);
@@ -207,7 +198,13 @@ servers.forEach(s=>{
 function showModal(port){
   document.getElementById("modal").style.display="flex";
   document.getElementById("command").innerText =
-`open ark.rhysegaming.com:${port}`;
+`1. Open ARK
+2. Press ~ (tilde key)
+3. Paste this command:
+
+open ark.rhysegaming.com:${port}
+
+4. Press Enter`;
 }
 
 window.closeModal = function(){
@@ -260,7 +257,7 @@ function refresh(){
 refresh();
 setInterval(refresh,30000);
 
-/* PARTICLES WITH LINES */
+// PARTICLES + LINES
 const c=document.getElementById('particles');
 const x=c.getContext('2d');
 c.width=innerWidth;
