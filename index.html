@@ -39,6 +39,7 @@ canvas {
   border-radius: 15px;
   background: #0f172a;
   overflow: hidden;
+  box-shadow: 0 0 25px rgba(0,0,0,0.6);
 }
 
 .banner {
@@ -61,6 +62,12 @@ canvas {
   color: white;
   cursor: pointer;
   border: none;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  background: #1d4ed8;
+  transform: scale(1.05);
 }
 
 .online { color: #22c55e; }
@@ -73,26 +80,36 @@ canvas {
   left: 50%;
   transform: translateX(-50%);
   background: #1e293b;
-  padding: 10px 20px;
-  border-radius: 6px;
+  padding: 12px 22px;
+  border-radius: 8px;
   display: none;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
-/* Modal */
+/* 🔥 IMPROVED MODAL */
 .modal {
   display: none;
   position: fixed;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.85);
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(6px);
+  z-index: 999;
 }
 
 .modal-content {
   background: #0f172a;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 25px;
+  border-radius: 12px;
+  transform: scale(0.9);
+  animation: pop 0.2s ease forwards;
+  box-shadow: 0 0 30px rgba(96,165,250,0.7);
+}
+
+@keyframes pop {
+  to { transform: scale(1); }
 }
 </style>
 </head>
@@ -111,7 +128,7 @@ canvas {
 
 <div id="modal" class="modal">
   <div class="modal-content">
-    <h3>Join Server</h3>
+    <h2>🎮 Join Server</h2>
     <p id="command"></p>
     <button class="btn" id="closeModal">Close</button>
   </div>
@@ -128,8 +145,8 @@ return `
 <div id="${id}-status">Checking...</div>
 
 <button class="btn play" data-port="${port}">🚀 Play Now</button>
-<button class="btn copy" data-port="${port}">📋 Copy</button>
-<button class="btn how" data-port="${port}">💬 How</button>
+<button class="btn copy" data-port="${port}">📋 Copy IP</button>
+<button class="btn how" data-port="${port}">💬 How to Join</button>
 
 </div>
 </div>`;
@@ -161,17 +178,15 @@ document.querySelectorAll(".how").forEach(btn=>{
 
 document.getElementById("closeModal").addEventListener("click", closeModal);
 
-// 🚀 FIXED LAUNCH
+// 🚀 LAUNCH (SAFE + RELIABLE)
 function launch(port){
   const url = `steam://connect/ark.rhysegaming.com:${port}`;
 
-  // Try Steam via iframe (non-blocking)
   const iframe = document.createElement("iframe");
   iframe.style.display = "none";
   iframe.src = url;
   document.body.appendChild(iframe);
 
-  // Always show fallback
   setTimeout(() => {
     showCommand(port);
   }, 1000);
@@ -192,8 +207,10 @@ function toast(msg){
   setTimeout(()=>t.style.display="none",2000);
 }
 
-// 💬 FIXED MODAL
+// 💬 MODAL (VISIBLE NOW)
 function showCommand(port){
+  console.log("Modal triggered", port);
+
   const modal = document.getElementById("modal");
   const command = document.getElementById("command");
 
