@@ -134,58 +134,68 @@ canvas {
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
-function serverCard(name,id,cls,port){
-return `
-<div class="card">
-<div class="banner ${cls}"><h2>${name}</h2></div>
-<div>
-<div id="${id}-status">Checking...</div>
+const servers = [
+  {name:"Island", id:"island", port:7777},
+  {name:"Astraeos", id:"astra", port:7877},
+  {name:"Ragnarok", id:"rag", port:7977}
+];
 
-<button class="btn play" data-port="${port}">🚀 Play Now</button>
-<button class="btn copy" data-port="${port}">📋 Copy IP</button>
-<button class="btn how" data-port="${port}">💬 How to Join</button>
+const container = document.getElementById("servers");
 
-</div>
-</div>`;
+// BUILD UI
+servers.forEach(s=>{
+  const card = document.createElement("div");
+  card.className = "card";
+
+  card.innerHTML = `
+    <div class="banner ${s.id}"><h2>${s.name}</h2></div>
+    <div>
+      <div id="${s.id}-status">Checking...</div>
+
+      <button class="btn">🚀 Play</button>
+      <button class="btn">📋 Copy</button>
+      <button class="btn">💬 How</button>
+    </div>
+  `;
+
+  const [playBtn, copyBtn, howBtn] = card.querySelectorAll("button");
+
+  // 🚀 PLAY
+  playBtn.onclick = () => {
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.src = `steam://connect/ark.rhysegaming.com:${s.port}`;
+    document.body.appendChild(iframe);
+
+    setTimeout(()=>showModal(s.port), 1000);
+  };
+
+  // 📋 COPY
+  copyBtn.onclick = () => {
+    const text = `ark.rhysegaming.com:${s.port}`;
+    navigator.clipboard.writeText(text);
+    toast(`Copied ${text}`);
+  };
+
+  // 💬 HOW
+  howBtn.onclick = () => {
+    showModal(s.port);
+  };
+
+  container.appendChild(card);
+});
+
+// MODAL
+function showModal(port){
+  const modal = document.getElementById("modal");
+  const command = document.getElementById("command");
+
+  modal.style.display = "flex";
+  command.innerText = `Press ~ in ARK and paste:\nopen ark.rhysegaming.com:${port}`;
 }
 
-document.getElementById("servers").innerHTML =
-serverCard("🌍 Island","island","island",7777)+
-serverCard("🪨 Astraeos","astra","astra",7877)+
-serverCard("🔥 Ragnarok","rag","rag",7977);
-
-// EVENTS
-document.querySelectorAll(".play").forEach(btn=>{
-  btn.addEventListener("click",()=>launch(btn.dataset.port));
-});
-
-document.querySelectorAll(".copy").forEach(btn=>{
-  btn.addEventListener("click",()=>copyIP(btn.dataset.port));
-});
-
-document.querySelectorAll(".how").forEach(btn=>{
-  btn.addEventListener("click",()=>showCommand(btn.dataset.port));
-});
-
-document.getElementById("closeModal").addEventListener("click", closeModal);
-
-// PLAY
-function launch(port){
-  const url = `steam://connect/ark.rhysegaming.com:${port}`;
-
-  const iframe = document.createElement("iframe");
-  iframe.style.display = "none";
-  iframe.src = url;
-  document.body.appendChild(iframe);
-
-  setTimeout(()=>showCommand(port),1200);
-}
-
-// COPY
-function copyIP(port){
-  const text=`ark.rhysegaming.com:${port}`;
-  navigator.clipboard.writeText(text);
-  toast("Copied: "+text);
+window.closeModal = function(){
+  document.getElementById("modal").style.display = "none";
 }
 
 // TOAST
@@ -196,80 +206,30 @@ function toast(msg){
   setTimeout(()=>t.style.display="none",2000);
 }
 
-// MODAL
-function showCommand(port){
-  document.getElementById("modal").style.display="flex";
-  document.getElementById("command").innerText =
-  `Press ~ in ARK and paste:\nopen ark.rhysegaming.com:${port}`;
-}
-
-function closeModal(){
-  document.getElementById("modal").style.display="none";
-}
-
 // STATUS
-async function checkServer(id,el){
+async function check(id,el){
  try{
   const r=await fetch(`https://api.battlemetrics.com/servers/${id}`);
   const d=await r.json();
   const s=d.data.attributes;
 
-  if(s.status!=="online"){
-    document.getElementById(el).innerHTML=`<span class="offline">● Offline</span>`;
-    return;
-  }
-
-  document.getElementById(el).innerHTML=
-  `<span class="online">● Online</span> (${s.players}/${s.maxPlayers})`;
+  document.getElementById(el).innerHTML =
+  s.status==="online"
+  ? `<span class="online">Online (${s.players})</span>`
+  : `<span class="offline">Offline</span>`;
  }catch{
-  document.getElementById(el).innerHTML=`<span class="offline">● Offline</span>`;
+  document.getElementById(el).innerHTML=`<span class="offline">Offline</span>`;
  }
 }
 
 function refresh(){
- checkServer("38310501","island-status");
- checkServer("38356867","astra-status");
- checkServer("38381239","rag-status");
+ check("38310501","island-status");
+ check("38356867","astra-status");
+ check("38381239","rag-status");
 }
 
 refresh();
 setInterval(refresh,30000);
-
-// PARTICLES
-const canvas = document.getElementById('particles');
-if(canvas){
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  let particles = [];
-  for(let i=0;i<80;i++){
-    particles.push({
-      x:Math.random()*canvas.width,
-      y:Math.random()*canvas.height,
-      size:Math.random()*2,
-      speed:Math.random()*0.5
-    });
-  }
-
-  function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    particles.forEach(p=>{
-      p.y+=p.speed;
-      if(p.y>canvas.height) p.y=0;
-
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-      ctx.fillStyle="#60a5fa";
-      ctx.fill();
-    });
-
-    requestAnimationFrame(animate);
-  }
-
-  animate();
-}
 
 });
 </script>
