@@ -47,9 +47,14 @@ canvas {
   transition: 0.3s;
 }
 
+/* 🟢 ONLINE GLOW */
+.card.online-card {
+  box-shadow: 0 0 20px rgba(34,197,94,0.6);
+}
+
+/* hover still works */
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 0 15px rgba(59,130,246,0.4);
 }
 
 .banner {
@@ -188,6 +193,7 @@ const container = document.getElementById("servers");
 servers.forEach(s=>{
   const card = document.createElement("div");
   card.className = "card";
+  card.id = `${s.id}-card`;
 
   card.innerHTML = `
     <div class="banner ${s.id}"><h2>${s.name}</h2></div>
@@ -255,22 +261,29 @@ function toast(msg){
   setTimeout(()=>t.style.display="none",2000);
 }
 
-// STATUS
+// STATUS + CARD GLOW
 async function check(id,el){
  try{
   const r=await fetch(`https://api.battlemetrics.com/servers/${id}`);
   const d=await r.json();
   const s=d.data.attributes;
 
-  document.getElementById(el).innerHTML =
-    s.status==="online"
-    ? `
+  const card = document.getElementById(el.replace("-status","-card"));
+
+  if(s.status==="online"){
+    card.classList.add("online-card");
+    document.getElementById(el).innerHTML =
+      `
       <div class="online">Online (${s.players})</div>
       <div class="bar">
         <div class="fill" style="width:${Math.min(s.players*5,100)}%"></div>
       </div>
-    `
-    : `<span class="offline">Offline</span>`;
+      `;
+  } else {
+    card.classList.remove("online-card");
+    document.getElementById(el).innerHTML = `<span class="offline">Offline</span>`;
+  }
+
  }catch{
   document.getElementById(el).innerHTML=`<span class="offline">Offline</span>`;
  }
@@ -285,7 +298,7 @@ function refresh(){
 refresh();
 setInterval(refresh,30000);
 
-/* 🌌 PARTICLES WITH MOUSE INTERACTION */
+// PARTICLES (same safe version)
 const c=document.getElementById('particles');
 if(c){
   const x=c.getContext('2d');
@@ -314,7 +327,6 @@ if(c){
     p.forEach(a=>{
       a.y+=a.v;
 
-      // 🧠 mouse push effect
       if(mouse.x){
         let dx = a.x - mouse.x;
         let dy = a.y - mouse.y;
