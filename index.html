@@ -105,7 +105,6 @@ canvas {
   opacity: .7;
 }
 
-/* 🔥 FIXED TOAST */
 .toast {
   position: fixed;
   bottom:20px;
@@ -116,10 +115,8 @@ canvas {
   border-radius:6px;
   display:none;
   z-index:10000;
-  opacity: 1;
 }
 
-/* MODAL */
 .modal {
   display:none;
   position:fixed;
@@ -201,7 +198,6 @@ servers.forEach(s=>{
   };
 
   btnContainer.appendChild(how);
-
   card.appendChild(btnContainer);
   container.appendChild(card);
 });
@@ -211,8 +207,8 @@ function showModal(port){
   document.getElementById("modal").style.display="flex";
   document.getElementById("command").innerText =
 `1. Open ARK
-2. Press ~ (tilde key)
-3. Paste this command:
+2. Press ~
+3. Paste:
 
 open ark.rhysegaming.com:${port}
 
@@ -228,63 +224,54 @@ window.joinDiscord = function(){
   window.open("https://discord.gg/xJM3Nkce8Y","_blank");
 }
 
-// 🔥 FIXED TOAST FUNCTION
+// TOAST
 function toast(msg){
   const t=document.getElementById("toast");
-
   t.innerText = msg;
   t.style.display = "block";
-
-  // force re-trigger
-  void t.offsetWidth;
-
-  setTimeout(()=>{
-    t.style.display = "none";
-  },2000);
+  setTimeout(()=>{ t.style.display = "none"; },2000);
 }
 
-// STATUS
-async function check(id,el){
+// 🔥 NEW API STATUS SYSTEM
+async function check(name, el){
  try{
-  const r=await fetch(`https://api.battlemetrics.com/servers/${id}`);
-  const d=await r.json();
-  const s=d.data.attributes;
+  const r = await fetch(`http://192.168.216.193:3000/status/${name}`);
+  const s = await r.json();
 
-  const card=document.getElementById(el.replace("-status","-card"));
+  const card = document.getElementById(el.replace("-status","-card"));
 
-  if(s.status==="online"){
+  if(s.online){
     card.classList.add("online-card");
 
     let percent = Math.min((s.players/MAX_PLAYERS)*100,100);
-    let ping = Math.floor(Math.random()*40)+30;
 
     document.getElementById(el).innerHTML = `
       <div class="online">Online (${s.players})</div>
-      <div class="ping">${ping} ms</div>
+      <div class="ping">${s.map}</div>
       <div class="bar">
         <div class="fill" style="width:${percent}%"></div>
       </div>
     `;
   } else {
     card.classList.remove("online-card");
-    document.getElementById(el).innerHTML=`<span class="offline">Offline</span>`;
+    document.getElementById(el).innerHTML = `<span class="offline">Offline</span>`;
   }
 
- }catch{
-  document.getElementById(el).innerHTML=`<span class="offline">Offline</span>`;
+ } catch {
+  document.getElementById(el).innerHTML = `<span class="offline">Offline</span>`;
  }
 }
 
 function refresh(){
- check("38310501","island-status");
- check("38356867","astra-status");
- check("38381239","rag-status");
+  check("island","island-status");
+  check("astra","astra-status");
+  check("rag","rag-status");
 }
 
 refresh();
 setInterval(refresh,30000);
 
-// PARTICLES + LINES
+// PARTICLES
 const c=document.getElementById('particles');
 const x=c.getContext('2d');
 c.width=innerWidth;
