@@ -72,7 +72,6 @@ canvas {
   display:none;
 }
 
-/* 🔥 FIXED MODAL */
 .modal {
   display:none;
   position:fixed;
@@ -154,9 +153,8 @@ servers.forEach(s=>{
   how.className = "btn";
   how.innerText = "💬 How";
 
-  // 🚀 PLAY (FIXED)
+  // 🚀 PLAY (FIXED — NO MODAL)
   play.onclick = () => {
-    showModal(s.port);
     window.location.href = `steam://connect/ark.rhysegaming.com:${s.port}`;
   };
 
@@ -167,7 +165,7 @@ servers.forEach(s=>{
     toast(`Copied ${text}`);
   };
 
-  // 💬 HOW (FIXED)
+  // 💬 HOW
   how.onclick = () => {
     showModal(s.port);
   };
