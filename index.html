@@ -73,7 +73,6 @@ canvas {
 .online { color: #22c55e; }
 .offline { color: #ef4444; }
 
-/* Toast */
 .toast {
   position: fixed;
   bottom: 20px;
@@ -83,10 +82,8 @@ canvas {
   padding: 12px 22px;
   border-radius: 8px;
   display: none;
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
-/* 🔥 IMPROVED MODAL */
 .modal {
   display: none;
   position: fixed;
@@ -103,12 +100,12 @@ canvas {
   background: #0f172a;
   padding: 25px;
   border-radius: 12px;
-  transform: scale(0.9);
   animation: pop 0.2s ease forwards;
   box-shadow: 0 0 30px rgba(96,165,250,0.7);
 }
 
 @keyframes pop {
+  from { transform: scale(0.9); }
   to { transform: scale(1); }
 }
 </style>
@@ -159,26 +156,20 @@ serverCard("🔥 Ragnarok","rag","rag",7977);
 
 // EVENTS
 document.querySelectorAll(".play").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    launch(btn.dataset.port);
-  });
+  btn.addEventListener("click",()=>launch(btn.dataset.port));
 });
 
 document.querySelectorAll(".copy").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    copyIP(btn.dataset.port);
-  });
+  btn.addEventListener("click",()=>copyIP(btn.dataset.port));
 });
 
 document.querySelectorAll(".how").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    showCommand(btn.dataset.port);
-  });
+  btn.addEventListener("click",()=>showCommand(btn.dataset.port));
 });
 
 document.getElementById("closeModal").addEventListener("click", closeModal);
 
-// 🚀 LAUNCH (FIXED)
+// PLAY
 function launch(port){
   const url = `steam://connect/ark.rhysegaming.com:${port}`;
 
@@ -187,10 +178,7 @@ function launch(port){
   iframe.src = url;
   document.body.appendChild(iframe);
 
-  // Force fallback ALWAYS
-  setTimeout(() => {
-    showCommand(port);
-  }, 1200);
+  setTimeout(()=>showCommand(port),1200);
 }
 
 // COPY
@@ -208,18 +196,10 @@ function toast(msg){
   setTimeout(()=>t.style.display="none",2000);
 }
 
-// 💬 MODAL (FIXED HARD)
+// MODAL
 function showCommand(port){
-  const modal = document.getElementById("modal");
-  const command = document.getElementById("command");
-
-  if(!modal || !command){
-    console.error("Modal missing");
-    return;
-  }
-
-  modal.style.display="flex";
-  command.innerText =
+  document.getElementById("modal").style.display="flex";
+  document.getElementById("command").innerText =
   `Press ~ in ARK and paste:\nopen ark.rhysegaming.com:${port}`;
 }
 
@@ -254,6 +234,42 @@ function refresh(){
 
 refresh();
 setInterval(refresh,30000);
+
+// 🔥 PARTICLES (RESTORED)
+const canvas = document.getElementById('particles');
+if(canvas){
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  let particles = [];
+  for(let i=0;i<80;i++){
+    particles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      size:Math.random()*2,
+      speed:Math.random()*0.5
+    });
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach(p=>{
+      p.y+=p.speed;
+      if(p.y>canvas.height) p.y=0;
+
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle="#60a5fa";
+      ctx.fill();
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+}
 
 });
 </script>
