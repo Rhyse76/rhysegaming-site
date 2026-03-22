@@ -16,30 +16,41 @@ body {
   text-align: center;
 }
 
+/* ✅ CANVAS SAFE (never blocks clicks) */
 canvas {
   position: fixed;
   top: 0;
   left: 0;
   z-index: -1;
+  pointer-events: none;
 }
 
-/* 🔥 LOGO GLOW */
+/* 🔥 LOGO GLOW (ANIMATED) */
 .logo img {
   width: 260px;
   margin-top: 20px;
-  filter: drop-shadow(0 0 15px rgba(59,130,246,0.6));
-  transition: 0.3s;
-}
-.logo img:hover {
-  filter: drop-shadow(0 0 30px rgba(59,130,246,1));
+  animation: glowPulse 3s ease-in-out infinite;
 }
 
+@keyframes glowPulse {
+  0%   { filter: drop-shadow(0 0 10px rgba(59,130,246,0.5)); }
+  50%  { filter: drop-shadow(0 0 30px rgba(59,130,246,1)); }
+  100% { filter: drop-shadow(0 0 10px rgba(59,130,246,0.5)); }
+}
+
+/* 🎮 CARD HOVER EFFECT */
 .card {
   max-width: 600px;
   margin: 25px auto;
   border-radius: 15px;
   background: #0f172a;
   overflow: hidden;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 15px rgba(59,130,246,0.4);
 }
 
 .banner {
@@ -54,6 +65,7 @@ canvas {
 .astra { background:url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa'); }
 .rag { background:url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1c'); }
 
+/* 🔘 BUTTONS */
 .btn {
   margin: 6px;
   padding: 10px 18px;
@@ -64,22 +76,30 @@ canvas {
   border: none;
   transition: 0.2s;
 }
+
 .btn:hover {
   background: #3b82f6;
-  box-shadow: 0 0 10px #3b82f6;
+  box-shadow: 0 0 12px #3b82f6, 0 0 20px #3b82f6;
 }
 
-/* 🎮 DISCORD BUTTON */
+/* 🎮 DISCORD */
 .discord {
   background: #5865F2;
 }
 .discord:hover {
   background: #6d78ff;
-  box-shadow: 0 0 12px #5865F2;
+  box-shadow: 0 0 15px #5865F2;
 }
 
-.online { color:#22c55e; }
-.offline { color:#ef4444; }
+/* 🟢 STATUS GLOW */
+.online {
+  color:#22c55e;
+  text-shadow: 0 0 8px #22c55e;
+}
+
+.offline {
+  color:#ef4444;
+}
 
 .toast {
   position: fixed;
@@ -123,7 +143,6 @@ canvas {
   <img src="logo.png">
 </div>
 
-<!-- 🔗 DISCORD -->
 <div style="margin-top:10px;">
   <button class="btn discord" onclick="joinDiscord()">Join Discord</button>
 </div>
@@ -151,7 +170,6 @@ const servers = [
 
 const container = document.getElementById("servers");
 
-// BUILD UI
 servers.forEach(s=>{
   const card = document.createElement("div");
   card.className = "card";
@@ -201,17 +219,15 @@ function showModal(port){
 open ark.rhysegaming.com:${port}`;
 }
 
-// CLOSE
 window.closeModal = function(){
   document.getElementById("modal").style.display = "none";
 }
 
-// CLICK OUTSIDE CLOSE
 document.getElementById("modal").onclick = (e) => {
   if (e.target.id === "modal") closeModal();
 };
 
-// 🔗 DISCORD (YOUR LINK ADDED)
+// DISCORD
 window.joinDiscord = function(){
   window.open("https://discord.gg/xJM3Nkce8Y", "_blank");
 }
@@ -249,7 +265,7 @@ function refresh(){
 refresh();
 setInterval(refresh,30000);
 
-// PARTICLES
+/* 🌌 UPGRADED PARTICLES (DEPTH EFFECT) */
 const c=document.getElementById('particles');
 if(c){
   const x=c.getContext('2d');
@@ -257,15 +273,23 @@ if(c){
   c.height=innerHeight;
 
   let p=[];
-  for(let i=0;i<80;i++){
-    p.push({x:Math.random()*c.width,y:Math.random()*c.height,s:Math.random()*2,v:Math.random()});
+  for(let i=0;i<100;i++){
+    p.push({
+      x:Math.random()*c.width,
+      y:Math.random()*c.height,
+      s:Math.random()*2,
+      v:Math.random()*1.5 + 0.2
+    });
   }
 
   function draw(){
     x.clearRect(0,0,c.width,c.height);
     p.forEach(a=>{
       a.y+=a.v;
-      if(a.y>c.height)a.y=0;
+      if(a.y>c.height){
+        a.y=0;
+        a.x=Math.random()*c.width;
+      }
       x.beginPath();
       x.arc(a.x,a.y,a.s,0,6.28);
       x.fillStyle="#60a5fa";
