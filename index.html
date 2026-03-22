@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rhyse Gaming</title>
 
-<!-- FAVICON -->
 <link rel="icon" href="logo.png">
 
 <style>
@@ -15,7 +14,6 @@ body {
   background: radial-gradient(circle at center, #020617, #000);
   color: white;
   text-align: center;
-  overflow-x: hidden;
 }
 
 canvas {
@@ -25,11 +23,8 @@ canvas {
   z-index: -1;
 }
 
-.hero { padding: 60px 20px 30px; }
-
 .logo img {
   width: 260px;
-  filter: drop-shadow(0 0 10px #3b82f6);
   animation: glow 2.5s infinite alternate;
 }
 
@@ -38,28 +33,13 @@ canvas {
   to { filter: drop-shadow(0 0 25px #60a5fa); }
 }
 
-.nav a {
-  margin: 0 12px;
-  color: #60a5fa;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.nav a:hover { color: white; }
-
-.container { padding: 20px; }
-
 .card {
   max-width: 600px;
   margin: 25px auto;
   border-radius: 15px;
-  overflow: hidden;
   background: #0f172a;
-  box-shadow: 0 0 25px rgba(0,0,0,0.7);
-  transition: 0.3s;
+  overflow: hidden;
 }
-
-.card:hover { transform: scale(1.02); }
 
 .banner {
   height: 200px;
@@ -69,48 +49,41 @@ canvas {
   background-size: cover;
 }
 
-.island {
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent),
-  url('https://images.unsplash.com/photo-1501785888041-af3ef285b470');
-}
-
-.astra {
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent),
-  url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa');
-}
-
-.rag {
-  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent),
-  url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1c');
-}
-
-.content { padding: 15px; }
-
-.online { color: #22c55e; }
-.offline { color: #ef4444; }
+.island { background: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470'); }
+.astra { background: url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa'); }
+.rag { background: url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1c'); }
 
 .btn {
-  display: inline-block;
   margin: 6px;
   padding: 10px 18px;
   background: #2563eb;
   border-radius: 8px;
-  text-decoration: none;
   color: white;
   cursor: pointer;
+  border: none;
 }
 
-.btn:hover { background: #1d4ed8; }
+.online { color: #22c55e; }
+.offline { color: #ef4444; }
 
-.small-btn { background: #334155; }
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  padding: 10px 20px;
+  border-radius: 6px;
+  display: none;
+}
 
-.footer { margin: 40px; color: #64748b; }
-
+/* Modal */
 .modal {
   display: none;
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   background: rgba(0,0,0,0.8);
   justify-content: center;
   align-items: center;
@@ -128,149 +101,130 @@ canvas {
 
 <canvas id="particles"></canvas>
 
-<div class="hero">
-  <div class="logo">
-    <img src="logo.png">
-  </div>
-
-  <div class="nav">
-    <a href="#servers">Servers</a>
-    <a href="https://discord.gg/vm8tstWJTh" target="_blank">Discord</a>
-  </div>
+<div class="logo">
+  <img src="logo.png">
 </div>
 
-<div id="servers" class="container">
+<div id="servers"></div>
 
-<script>
-function serverCard(name, id, bannerClass, port) {
-  return `
-  <div class="card">
-    <div class="banner ${bannerClass}">
-      <h2>${name}</h2>
-    </div>
-    <div class="content">
-      <div id="${id}-status">Checking...</div>
-
-      <a class="btn" href="#" onclick="launchSteam(${port})">🚀 Play Now</a>
-      <button class="btn small-btn" onclick="copyIP(${port})">📋 Copy IP</button>
-      <button class="btn small-btn" onclick="showCommand(${port})">💬 How to Join</button>
-    </div>
-  </div>
-  `;
-}
-
-document.write(serverCard("🌍 Island","island","island",7777));
-document.write(serverCard("🪨 Astraeos","astra","astra",7877));
-document.write(serverCard("🔥 Ragnarok","rag","rag",7977));
-</script>
-
-<div class="card">
-  <h2>💬 Join Our Community</h2>
-  <a class="btn" href="https://discord.gg/vm8tstWJTh" target="_blank">Join Discord</a>
-</div>
-
-</div>
-
-<div class="footer">© Rhyse Gaming</div>
+<div id="toast" class="toast"></div>
 
 <div id="modal" class="modal">
   <div class="modal-content">
-    <h3>Join via Console</h3>
+    <h3>Join Server</h3>
     <p id="command"></p>
     <button class="btn" onclick="closeModal()">Close</button>
   </div>
 </div>
 
 <script>
-function copyIP(port) {
-  const text = `ark.rhysegaming.com:${port}`;
+function serverCard(name,id,cls,port){
+return `
+<div class="card">
+<div class="banner ${cls}"><h2>${name}</h2></div>
+<div>
+<div id="${id}-status">Checking...</div>
+<button class="btn" onclick="launch(${port})">🚀 Play Now</button>
+<button class="btn" onclick="copyIP(${port})">📋 Copy</button>
+<button class="btn" onclick="showCommand(${port})">💬 How</button>
+</div>
+</div>`;
+}
+
+document.getElementById("servers").innerHTML =
+serverCard("🌍 Island","island","island",7777)+
+serverCard("🪨 Astraeos","astra","astra",7877)+
+serverCard("🔥 Ragnarok","rag","rag",7977);
+
+// SMART LAUNCH
+function launch(port){
+  const url=`steam://connect/ark.rhysegaming.com:${port}`;
+
+  // try steam
+  window.location.href=url;
+
+  // fallback
+  setTimeout(()=>showCommand(port),1500);
+}
+
+// COPY
+function copyIP(port){
+  const text=`ark.rhysegaming.com:${port}`;
   navigator.clipboard.writeText(text);
-  alert("Copied: " + text);
+  toast("Copied: "+text);
 }
 
-function launchSteam(port) {
-  window.location.href = `steam://connect/ark.rhysegaming.com:${port}`;
+// TOAST
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.innerText=msg;
+  t.style.display="block";
+  setTimeout(()=>t.style.display="none",2000);
 }
 
-function showCommand(port) {
-  document.getElementById("modal").style.display = "flex";
-  document.getElementById("command").innerText =
-    `open ark.rhysegaming.com:${port}`;
+// MODAL
+function showCommand(port){
+  document.getElementById("modal").style.display="flex";
+  document.getElementById("command").innerText=
+  `Press ~ in ARK and paste:\nopen ark.rhysegaming.com:${port}`;
 }
+function closeModal(){document.getElementById("modal").style.display="none";}
 
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
-}
+// STATUS FIX
+async function checkServer(id,el){
+ try{
+  const r=await fetch(`https://api.battlemetrics.com/servers/${id}`);
+  const d=await r.json();
+  const s=d.data.attributes;
 
-// ✅ FIXED SERVER STATUS
-async function checkServer(serverId, elementId) {
-  try {
-    const res = await fetch(`https://api.battlemetrics.com/servers/${serverId}`);
-    const data = await res.json();
-    const s = data.data.attributes;
-
-    if (s.status !== "online") {
-      document.getElementById(elementId).innerHTML =
-        `<span class="offline">● Offline</span>`;
-      return;
-    }
-
-    document.getElementById(elementId).innerHTML =
-      `<span class="online">● Online</span> (${s.players}/${s.maxPlayers})`;
-
-  } catch {
-    document.getElementById(elementId).innerHTML =
-      `<span class="offline">● Offline</span>`;
+  if(s.status!=="online"){
+    document.getElementById(el).innerHTML=`<span class="offline">● Offline</span>`;
+    return;
   }
+
+  document.getElementById(el).innerHTML=
+  `<span class="online">● Online</span> (${s.players}/${s.maxPlayers})`;
+ }catch{
+  document.getElementById(el).innerHTML=`<span class="offline">● Offline</span>`;
+ }
 }
 
-function refresh() {
-  checkServer("38310501", "island-status");
-  checkServer("38356867", "astra-status");
-  checkServer("38381239", "rag-status");
+function refresh(){
+ checkServer("38310501","island-status");
+ checkServer("38356867","astra-status");
+ checkServer("38381239","rag-status");
 }
-
 refresh();
-setInterval(refresh, 30000);
+setInterval(refresh,30000);
 
-// ✨ IMPROVED PARTICLES
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
+// PARTICLES
+const c=document.getElementById('particles');
+const x=c.getContext('2d');
+c.width=innerWidth;
+c.height=innerHeight;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles = [];
-
-for (let i = 0; i < 100; i++) {
-  particles.push({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    size: Math.random()*2,
-    speed: Math.random()*0.7
-  });
+let p=[];
+for(let i=0;i<100;i++){
+ p.push({x:Math.random()*c.width,y:Math.random()*c.height,s:Math.random()*2,v:Math.random()});
 }
 
-function animate() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  particles.forEach(p=>{
-    p.y += p.speed;
-    if (p.y > canvas.height) p.y = 0;
-
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-    ctx.fillStyle = "rgba(96,165,250,0.8)";
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = "#60a5fa";
-    ctx.fill();
-  });
-
-  requestAnimationFrame(animate);
+function draw(){
+ x.clearRect(0,0,c.width,c.height);
+ p.forEach(a=>{
+  a.y+=a.v;
+  if(a.y>c.height)a.y=0;
+  x.beginPath();
+  x.arc(a.x,a.y,a.s,0,6.28);
+  x.fillStyle="#60a5fa";
+  x.shadowBlur=10;
+  x.shadowColor="#60a5fa";
+  x.fill();
+ });
+ requestAnimationFrame(draw);
 }
-
-animate();
+draw();
 </script>
 
 </body>
 </html>
+
