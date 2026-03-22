@@ -16,7 +16,6 @@ body {
   text-align: center;
 }
 
-/* ✅ CANVAS SAFE (never blocks clicks) */
 canvas {
   position: fixed;
   top: 0;
@@ -25,7 +24,7 @@ canvas {
   pointer-events: none;
 }
 
-/* 🔥 LOGO GLOW (ANIMATED) */
+/* LOGO GLOW */
 .logo img {
   width: 260px;
   margin-top: 20px;
@@ -38,7 +37,7 @@ canvas {
   100% { filter: drop-shadow(0 0 10px rgba(59,130,246,0.5)); }
 }
 
-/* 🎮 CARD HOVER EFFECT */
+/* CARDS */
 .card {
   max-width: 600px;
   margin: 25px auto;
@@ -65,7 +64,7 @@ canvas {
 .astra { background:url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa'); }
 .rag { background:url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1c'); }
 
-/* 🔘 BUTTONS */
+/* BUTTONS */
 .btn {
   margin: 6px;
   padding: 10px 18px;
@@ -82,7 +81,7 @@ canvas {
   box-shadow: 0 0 12px #3b82f6, 0 0 20px #3b82f6;
 }
 
-/* 🎮 DISCORD */
+/* DISCORD */
 .discord {
   background: #5865F2;
 }
@@ -91,7 +90,7 @@ canvas {
   box-shadow: 0 0 15px #5865F2;
 }
 
-/* 🟢 STATUS GLOW */
+/* STATUS */
 .online {
   color:#22c55e;
   text-shadow: 0 0 8px #22c55e;
@@ -99,6 +98,23 @@ canvas {
 
 .offline {
   color:#ef4444;
+}
+
+/* 🔥 PLAYER BAR */
+.bar {
+  width: 80%;
+  height: 8px;
+  background: #1e293b;
+  margin: 8px auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  transition: width 0.5s ease;
+  box-shadow: 0 0 8px #22c55e;
 }
 
 .toast {
@@ -240,7 +256,7 @@ function toast(msg){
   setTimeout(()=>t.style.display="none",2000);
 }
 
-// STATUS
+// STATUS (🔥 UPDATED WITH BAR)
 async function check(id,el){
  try{
   const r=await fetch(`https://api.battlemetrics.com/servers/${id}`);
@@ -249,7 +265,12 @@ async function check(id,el){
 
   document.getElementById(el).innerHTML =
     s.status==="online"
-    ? `<span class="online">Online (${s.players})</span>`
+    ? `
+      <div class="online">Online (${s.players})</div>
+      <div class="bar">
+        <div class="fill" style="width:${Math.min(s.players*5,100)}%"></div>
+      </div>
+    `
     : `<span class="offline">Offline</span>`;
  }catch{
   document.getElementById(el).innerHTML=`<span class="offline">Offline</span>`;
@@ -265,7 +286,7 @@ function refresh(){
 refresh();
 setInterval(refresh,30000);
 
-/* 🌌 UPGRADED PARTICLES (DEPTH EFFECT) */
+// PARTICLES
 const c=document.getElementById('particles');
 if(c){
   const x=c.getContext('2d');
