@@ -164,8 +164,6 @@ canvas {
 <script>
 document.addEventListener("DOMContentLoaded", function(){
 
-const MAX_PLAYERS = 70;
-
 const servers = [
   {name:"Island", id:"island", port:7777},
   {name:"Astraeos", id:"astra", port:7877},
@@ -232,7 +230,7 @@ function toast(msg){
   setTimeout(()=>{ t.style.display = "none"; },2000);
 }
 
-// 🔥 NEW API STATUS SYSTEM
+// 🔥 FIXED API STATUS SYSTEM (NO PLAYERS)
 async function check(name, el){
  try{
   const r = await fetch(`https://api.rhysegaming.com/status/${name}`);
@@ -243,14 +241,9 @@ async function check(name, el){
   if(s.online){
     card.classList.add("online-card");
 
-    let percent = Math.min((s.players/MAX_PLAYERS)*100,100);
-
     document.getElementById(el).innerHTML = `
-      <div class="online">Online (${s.players})</div>
+      <div class="online">Online</div>
       <div class="ping">${s.map}</div>
-      <div class="bar">
-        <div class="fill" style="width:${percent}%"></div>
-      </div>
     `;
   } else {
     card.classList.remove("online-card");
@@ -271,7 +264,7 @@ function refresh(){
 refresh();
 setInterval(refresh,30000);
 
-// PARTICLES
+// PARTICLES (unchanged)
 const c=document.getElementById('particles');
 const x=c.getContext('2d');
 c.width=innerWidth;
