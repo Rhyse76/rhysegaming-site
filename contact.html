@@ -167,7 +167,7 @@
 <a href="index.html" class="back-link">← Return to Servers</a>
 
 <script>
-// --- FORM HANDLING (AJAX) ---
+// --- FORM HANDLING (DEBUG VERSION) ---
 const form = document.getElementById("contact-form");
 const btn = document.getElementById("submit-btn");
 
@@ -177,31 +177,38 @@ async function handleSubmit(event) {
   btn.innerHTML = "Sending...";
   btn.disabled = true;
 
-  // Pulling directly from the submitted target for accuracy
-  const data = new FormData(event.target); 
+  const data = new FormData(event.target);
 
   fetch(event.target.action, {
     method: 'POST',
     body: data,
-    mode: 'cors',
     headers: {
         'Accept': 'application/json'
+        // Let the browser handle Content-Type and CORS automatically
     }
-  }).then(response => {
+  }).then(async response => {
     if (response.ok) {
-      // SUCCESS: Manual redirect back home
+      // SUCCESS: Manual redirect
       window.location.href = "index.html?status=sent";
     } else {
-      return response.json().then(data => {
-        console.error("Formspree Error:", data);
-        alert("Submission failed. Check your Formspree settings or if the form is activated.");
-        btn.innerHTML = "Send Message";
-        btn.disabled = false;
-      });
+      // DEBUG: Capture the exact error from the server
+      const errorData = await response.json();
+      console.error("DEBUG LOG:", errorData);
+      
+      // This will show you exactly WHY it's 403 Forbidden
+      let errorMsg = errorData.error || "Unknown Error";
+      if (errorData.errors) {
+        errorMsg = errorData.errors.map(e => e.message).join(", ");
+      }
+      
+      alert("SERVER REJECTED: " + errorMsg);
+      
+      btn.innerHTML = "Send Message";
+      btn.disabled = false;
     }
   }).catch(error => {
-    console.error("Fetch error:", error);
-    alert("Connection error. Ensure you are testing on the live site.");
+    console.error("NETWORK ERROR:", error);
+    alert("NETWORK ERROR: Check console (F12) for details.");
     btn.innerHTML = "Send Message";
     btn.disabled = false;
   });
