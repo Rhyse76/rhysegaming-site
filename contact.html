@@ -53,15 +53,10 @@
     transition: 0.3s;
   }
 
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
-  }
-
   h2 { margin-top: 0; color: #3b82f6; font-size: 24px; }
   p { opacity: 0.7; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
 
-  .form-group { margin-bottom: 20px; }
+  .form-group { margin-bottom: 20px; position: relative; }
   
   label {
     display: block;
@@ -88,8 +83,18 @@
 
   input:focus, textarea:focus {
     border-color: #3b82f6;
-    background: #1e293b;
   }
+
+  /* Character Counter Styling */
+  #char-count {
+    position: absolute;
+    right: 0;
+    bottom: -18px;
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  .limit-near { color: #ef4444 !important; font-weight: bold; }
 
   .btn {
     width: 100%;
@@ -102,6 +107,7 @@
     font-weight: bold;
     font-size: 16px;
     transition: 0.3s;
+    margin-top: 10px;
   }
 
   .btn:hover {
@@ -123,8 +129,6 @@
     transition: 0.3s;
     display: inline-block;
   }
-
-  .back-link:hover { color: #3b82f6; }
 
   .hidden { display: none; }
 </style>
@@ -155,7 +159,8 @@
 
     <div class="form-group">
       <label>Message</label>
-      <textarea name="message" rows="5" placeholder="How can we help?" required></textarea>
+      <textarea id="message" name="message" rows="5" placeholder="How can we help?" maxlength="500" required></textarea>
+      <div id="char-count">0 / 500</div>
     </div>
 
     <input type="text" name="_gotcha" class="hidden">
@@ -167,13 +172,27 @@
 <a href="index.html" class="back-link">← Return to Servers</a>
 
 <script>
-// --- FORM HANDLING (DEBUG VERSION) ---
+// --- CHARACTER COUNTER LOGIC ---
+const msgArea = document.getElementById("message");
+const charCount = document.getElementById("char-count");
+
+msgArea.addEventListener("input", () => {
+  const length = msgArea.value.length;
+  charCount.innerText = `${length} / 500`;
+  
+  if (length >= 450) {
+    charCount.classList.add("limit-near");
+  } else {
+    charCount.classList.remove("limit-near");
+  }
+});
+
+// --- FORM HANDLING ---
 const form = document.getElementById("contact-form");
 const btn = document.getElementById("submit-btn");
 
 async function handleSubmit(event) {
   event.preventDefault();
-  
   btn.innerHTML = "Sending...";
   btn.disabled = true;
 
@@ -182,33 +201,18 @@ async function handleSubmit(event) {
   fetch(event.target.action, {
     method: 'POST',
     body: data,
-    headers: {
-        'Accept': 'application/json'
-        // Let the browser handle Content-Type and CORS automatically
-    }
+    headers: { 'Accept': 'application/json' }
   }).then(async response => {
     if (response.ok) {
-      // SUCCESS: Manual redirect
       window.location.href = "index.html?status=sent";
     } else {
-      // DEBUG: Capture the exact error from the server
       const errorData = await response.json();
-      console.error("DEBUG LOG:", errorData);
-      
-      // This will show you exactly WHY it's 403 Forbidden
-      let errorMsg = errorData.error || "Unknown Error";
-      if (errorData.errors) {
-        errorMsg = errorData.errors.map(e => e.message).join(", ");
-      }
-      
-      alert("SERVER REJECTED: " + errorMsg);
-      
+      alert("Error: " + (errorData.error || "Submission failed"));
       btn.innerHTML = "Send Message";
       btn.disabled = false;
     }
   }).catch(error => {
-    console.error("NETWORK ERROR:", error);
-    alert("NETWORK ERROR: Check console (F12) for details.");
+    alert("Network error. Please try again.");
     btn.innerHTML = "Send Message";
     btn.disabled = false;
   });
@@ -221,11 +225,8 @@ const c=document.getElementById('particles');
 const x=c.getContext('2d');
 c.width=innerWidth;
 c.height=innerHeight;
-
 let p=[];
-for(let i=0;i<80;i++){
-  p.push({x:Math.random()*c.width,y:Math.random()*c.height});
-}
+for(let i=0;i<80;i++){ p.push({x:Math.random()*c.width,y:Math.random()*c.height}); }
 
 function draw(){
   x.clearRect(0,0,c.width,c.height);
@@ -237,26 +238,17 @@ function draw(){
     x.fillStyle="#60a5fa";
     x.fill();
     p.forEach(b=>{
-      let dx=a.x-b.x;
-      let dy=a.y-b.y;
-      let dist=Math.sqrt(dx*dx+dy*dy);
+      let dx=a.x-b.x, dy=a.y-b.y, dist=Math.sqrt(dx*dx+dy*dy);
       if(dist<80){
         x.strokeStyle="rgba(96,165,250,0.2)";
-        x.beginPath();
-        x.moveTo(a.x,a.y);
-        x.lineTo(b.x,b.y);
-        x.stroke();
+        x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x,b.y); x.stroke();
       }
     });
   });
   requestAnimationFrame(draw);
 }
 draw();
-
-window.addEventListener('resize', () => {
-  c.width = innerWidth;
-  c.height = innerHeight;
-});
+window.addEventListener('resize', () => { c.width = innerWidth; c.height = innerHeight; });
 </script>
 
 </body>
