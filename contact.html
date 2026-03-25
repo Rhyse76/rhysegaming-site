@@ -7,7 +7,7 @@
 <link rel="icon" href="logo.png">
 
 <style>
-  /* Inherited from your main page */
+  /* Inherited from your Rhyse Gaming main page */
   body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -29,7 +29,7 @@
   }
 
   .logo img {
-    width: 180px; /* Slightly smaller for the contact page */
+    width: 200px;
     margin-top: 20px;
     animation: glowPulse 3s infinite;
     cursor: pointer;
@@ -41,20 +41,26 @@
     100% { filter: drop-shadow(0 0 10px #3b82f6); }
   }
 
-  /* Contact Specific Card Styling */
+  /* Contact Card Styling */
   .card {
     max-width: 500px;
     width: 90%;
-    margin: 40px auto;
+    margin: 30px auto;
     padding: 30px;
     border-radius: 15px;
     background: #0f172a;
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
     text-align: left;
+    transition: 0.3s;
   }
 
-  h2 { margin-top: 0; color: #3b82f6; }
-  p { opacity: 0.7; font-size: 14px; margin-bottom: 25px; }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
+  }
+
+  h2 { margin-top: 0; color: #3b82f6; font-size: 24px; }
+  p { opacity: 0.7; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
 
   /* Form Elements */
   .form-group { margin-bottom: 20px; }
@@ -62,10 +68,11 @@
   label {
     display: block;
     margin-bottom: 8px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
     color: #94a3b8;
     text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
   input, textarea {
@@ -83,7 +90,7 @@
 
   input:focus, textarea:focus {
     border-color: #3b82f6;
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    background: #1e293b;
   }
 
   .btn {
@@ -104,17 +111,23 @@
     box-shadow: 0 0 12px #3b82f6;
   }
 
+  .btn:disabled {
+    background: #1e293b;
+    color: #64748b;
+    cursor: not-allowed;
+  }
+
   .back-link {
-    margin-top: 20px;
+    margin-top: 10px;
     text-decoration: none;
     color: #64748b;
     font-size: 14px;
     transition: 0.3s;
+    display: inline-block;
   }
 
   .back-link:hover { color: #3b82f6; }
 
-  /* Hidden Honeypot */
   .hidden { display: none; }
 </style>
 </head>
@@ -124,16 +137,16 @@
 <canvas id="particles"></canvas>
 
 <div class="logo" onclick="window.location.href='index.html'">
-  <img src="logo.png" alt="Rhyse Gaming Logo">
+  <img src="logo.png" alt="Rhyse Gaming">
 </div>
 
 <div class="card">
-  <h2>Contact Support</h2>
-  <p>Have questions about the ARK servers or Discord? Drop a message below.</p>
+  <h2>Contact Us</h2>
+  <p>Fill out the form below and we'll get back to you as soon as possible.</p>
   
-  <form action="https://formspree.io/f/mwvwenpn" method="POST">
+  <form id="contact-form" action="https://formspree.io/f/mwvwenpn" method="POST">
     <div class="form-group">
-      <label>Your Name</label>
+      <label>Full Name</label>
       <input type="text" name="name" placeholder="Survivor Name" required>
     </div>
 
@@ -144,19 +157,54 @@
 
     <div class="form-group">
       <label>Message</label>
-      <textarea name="message" rows="5" placeholder="What's on your mind?" required></textarea>
+      <textarea name="message" rows="5" placeholder="How can we help?" required></textarea>
     </div>
 
     <input type="text" name="_gotcha" class="hidden">
 
-    <button type="submit" class="btn">Send Message</button>
+    <button type="submit" id="submit-btn" class="btn">Send Message</button>
   </form>
 </div>
 
 <a href="index.html" class="back-link">← Return to Servers</a>
 
 <script>
-// This is your exact particle system from the main page
+// --- FORM HANDLING (AJAX) ---
+const form = document.getElementById("contact-form");
+const btn = document.getElementById("submit-btn");
+
+async function handleSubmit(event) {
+  event.preventDefault();
+  btn.innerHTML = "Sending...";
+  btn.disabled = true;
+
+  const data = new FormData(event.target);
+
+  fetch(event.target.action, {
+    method: form.method,
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(response => {
+    if (response.ok) {
+      // Success: Manually redirect to your main page with the status tag
+      window.location.href = "index.html?status=sent";
+    } else {
+      response.json().then(data => {
+        alert("Error: " + (data.errors ? data.errors[0].message : "Submission failed"));
+        btn.innerHTML = "Send Message";
+        btn.disabled = false;
+      });
+    }
+  }).catch(error => {
+    alert("Connection error. Please try again.");
+    btn.innerHTML = "Send Message";
+    btn.disabled = false;
+  });
+}
+
+form.addEventListener("submit", handleSubmit);
+
+// --- PARTICLE SYSTEM (Original Rhyse Gaming Logic) ---
 const c=document.getElementById('particles');
 const x=c.getContext('2d');
 c.width=innerWidth;
