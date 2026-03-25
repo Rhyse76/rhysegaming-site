@@ -8,7 +8,6 @@
 <link rel="icon" href="logo.png">
 
 <style>
-  /* Inherited from your Rhyse Gaming main page */
   body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -42,7 +41,6 @@
     100% { filter: drop-shadow(0 0 10px #3b82f6); }
   }
 
-  /* Contact Card Styling */
   .card {
     max-width: 500px;
     width: 90%;
@@ -63,7 +61,6 @@
   h2 { margin-top: 0; color: #3b82f6; font-size: 24px; }
   p { opacity: 0.7; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
 
-  /* Form Elements */
   .form-group { margin-bottom: 20px; }
   
   label {
@@ -174,34 +171,37 @@
 const form = document.getElementById("contact-form");
 const btn = document.getElementById("submit-btn");
 
-// Replace your existing handleSubmit function with this one:
 async function handleSubmit(event) {
   event.preventDefault();
-  // We already defined 'btn' and 'form' at the top of the script!
   
   btn.innerHTML = "Sending...";
   btn.disabled = true;
 
-  const data = new FormData(form); // use the 'form' variable from the top
+  // Pulling directly from the submitted target for accuracy
+  const data = new FormData(event.target); 
 
-  fetch(form.action, {
+  fetch(event.target.action, {
     method: 'POST',
     body: data,
-    headers: { 'Accept': 'application/json' }
+    mode: 'cors',
+    headers: {
+        'Accept': 'application/json'
+    }
   }).then(response => {
     if (response.ok) {
+      // SUCCESS: Manual redirect back home
       window.location.href = "index.html?status=sent";
     } else {
       return response.json().then(data => {
-        console.error(data);
-        alert("Submission failed. Check your Formspree dashboard.");
+        console.error("Formspree Error:", data);
+        alert("Submission failed. Check your Formspree settings or if the form is activated.");
         btn.innerHTML = "Send Message";
         btn.disabled = false;
       });
     }
   }).catch(error => {
     console.error("Fetch error:", error);
-    alert("Connection error. Make sure you are testing on the live site.");
+    alert("Connection error. Ensure you are testing on the live site.");
     btn.innerHTML = "Send Message";
     btn.disabled = false;
   });
@@ -209,7 +209,7 @@ async function handleSubmit(event) {
 
 form.addEventListener("submit", handleSubmit);
 
-// --- PARTICLE SYSTEM (Original Rhyse Gaming Logic) ---
+// --- PARTICLE SYSTEM ---
 const c=document.getElementById('particles');
 const x=c.getContext('2d');
 c.width=innerWidth;
