@@ -176,36 +176,31 @@ const btn = document.getElementById("submit-btn");
 // Replace your existing handleSubmit function with this one:
 async function handleSubmit(event) {
   event.preventDefault();
-  const btn = document.getElementById("submit-btn");
-  const form = event.target;
+  // We already defined 'btn' and 'form' at the top of the script!
   
   btn.innerHTML = "Sending...";
   btn.disabled = true;
 
-  const data = new FormData(form);
+  const data = new FormData(form); // use the 'form' variable from the top
 
   fetch(form.action, {
     method: 'POST',
     body: data,
-    headers: {
-        'Accept': 'application/json'
-        // Removed 'Content-Type' to let the browser set it automatically for FormData
-    }
+    headers: { 'Accept': 'application/json' }
   }).then(response => {
     if (response.ok) {
-      // SUCCESS: Manual redirect
       window.location.href = "index.html?status=sent";
     } else {
       return response.json().then(data => {
         console.error(data);
-        alert("Submission failed. Please check your Formspree settings.");
+        alert("Submission failed. Check your Formspree dashboard.");
         btn.innerHTML = "Send Message";
         btn.disabled = false;
       });
     }
   }).catch(error => {
     console.error("Fetch error:", error);
-    alert("Connection error. Ensure you are viewing the live site (not a local file).");
+    alert("Connection error. Make sure you are testing on the live site.");
     btn.innerHTML = "Send Message";
     btn.disabled = false;
   });
