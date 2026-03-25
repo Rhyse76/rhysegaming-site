@@ -307,7 +307,15 @@ function draw(){
 }
 
 draw();
-
+// Check if the user was redirected from the contact form
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('status') === 'sent') {
+  // Use your existing toast function!
+  toast("🚀 Message sent! I'll get back to you soon.");
+  
+  // Clean up the URL so the toast doesn't pop up again if they refresh
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
 });
 </script>
 <!-- Hidden Admin Gear -->
