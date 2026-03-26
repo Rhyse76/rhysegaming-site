@@ -45,16 +45,25 @@ nav {
 
 .content { flex: 1; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
 
-.logo img {
-  width: 180px;
+/* LOGO COLOR CORRECTION */
+.logo-container { margin-bottom: 40px; }
+.logo-container img {
+  width: 220px; /* Matched to main page */
+  height: auto;
   animation: glowPulse 3s infinite ease-in-out;
-  cursor: pointer;
-  margin-bottom: 20px;
+  pointer-events: none;
+  display: block;
 }
 
 @keyframes glowPulse {
-  0%, 100% { filter: drop-shadow(0 0 10px var(--blue-glow)); transform: scale(1); }
-  50% { filter: drop-shadow(0 0 25px var(--blue-glow)); transform: scale(1.02); }
+  0%, 100% { 
+    filter: drop-shadow(0 0 10px var(--blue-glow)) brightness(1); 
+    transform: scale(1); 
+  }
+  50% { 
+    filter: drop-shadow(0 0 25px var(--blue-glow)) brightness(1.2); 
+    transform: scale(1.02); 
+  }
 }
 
 .card {
@@ -117,6 +126,7 @@ input:focus, textarea:focus { border-color: var(--blue-glow); background: rgba(3
   }
   .nav-links.active { display: flex; }
   .nav-links .btn { margin-bottom: 10px; }
+  .logo-container img { width: 180px; }
 }
 
 footer { padding: 40px 20px; background: rgba(2, 6, 23, 0.8); border-top: 1px solid rgba(255, 255, 255, 0.05); text-align: center; }
@@ -138,7 +148,9 @@ footer { padding: 40px 20px; background: rgba(2, 6, 23, 0.8); border-top: 1px so
 </nav>
 
 <div class="content">
-  <div class="logo" onclick="window.location.href='index.html'"><img src="logo.png" alt="Rhyse Gaming"></div>
+  <div class="logo-container" onclick="window.location.href='index.html'">
+    <img src="logo.png" alt="Rhyse Gaming">
+  </div>
 
   <div class="card">
     <h2>Contact Us</h2>
@@ -205,7 +217,6 @@ form.addEventListener("submit", async (e) => {
   });
 });
 
-// --- MATCHING PARTICLE SYSTEM ---
 const c=document.getElementById('particles'); const x=c.getContext('2d');
 let p=[]; let mouse = { x: null, y: null };
 window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
