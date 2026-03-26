@@ -28,7 +28,6 @@
 
         canvas { position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; }
 
-        /* Navigation */
         nav {
             background: rgba(15, 23, 42, 0.9);
             backdrop-filter: blur(10px);
@@ -40,47 +39,26 @@
 
         .nav-logo { font-weight: bold; font-size: 1.2rem; color: var(--blue-glow); text-decoration: none; letter-spacing: 1px; }
 
-        /* Layout Container */
         .main-layout { display: flex; flex: 1; position: relative; }
 
-        /* Sidebar Style */
+        /* Sidebar Styles */
         .sidebar {
             width: var(--sidebar-w);
             background: rgba(15, 23, 42, 0.4);
             backdrop-filter: blur(10px);
             border-right: 1px solid rgba(255, 255, 255, 0.05);
             padding: 30px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            position: sticky;
-            top: 65px;
-            height: calc(100vh - 65px);
+            display: flex; flex-direction: column; gap: 10px;
+            position: sticky; top: 65px; height: calc(100vh - 65px);
         }
 
-        .sidebar-title {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #64748b;
-            margin-bottom: 15px;
-            text-align: left;
-            padding-left: 10px;
-        }
+        .sidebar-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: #64748b; margin-bottom: 15px; text-align: left; padding-left: 10px; }
 
         .sidebar-link {
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: left;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid transparent;
-            text-decoration: none;
-            color: white;
+            padding: 12px 15px; background: rgba(255, 255, 255, 0.03); border-radius: 8px;
+            cursor: pointer; text-align: left; transition: 0.2s;
+            display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid transparent; text-decoration: none; color: white;
         }
 
         .sidebar-link:hover { background: rgba(59, 130, 246, 0.1); border-color: var(--blue-glow); }
@@ -88,69 +66,41 @@
         .status-dot { height: 8px; width: 8px; border-radius: 50%; background: #ef4444; }
         .status-dot.online-dot { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
 
-        /* Content Area */
-        .content { flex: 1; padding: 20px; text-align: center; }
-
-        .logo img { width: 180px; margin-bottom: 20px; animation: glowPulse 3s infinite; }
-        @keyframes glowPulse {
-            0%, 100% { filter: drop-shadow(0 0 10px var(--blue-glow)); }
-            50% { filter: drop-shadow(0 0 25px var(--blue-glow)); }
-        }
-
-        .card {
-            max-width: 600px;
-            margin: 0 auto 30px;
-            border-radius: 15px;
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            overflow: hidden;
+        /* Server Cards Hiding Logic */
+        .card { 
+            display: none; /* Hidden by default */
+            max-width: 600px; margin: 0 auto 30px; border-radius: 15px;
+            background: var(--card-bg); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden;
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             scroll-margin-top: 100px;
         }
 
-        .card.highlight { border-color: var(--blue-glow); transform: scale(1.02); }
+        /* Show if Online OR manually selected from Sidebar */
+        .card.online-card, .card.show-manual { display: block; }
 
+        .card.highlight { border-color: var(--blue-glow); transform: scale(1.02); }
         .online-card { border-left: 4px solid #22c55e; }
 
-        .banner {
-            height: 140px;
-            display: flex; align-items: flex-end;
-            padding: 20px;
-            background-size: cover; background-position: center;
-        }
-
+        .banner { height: 140px; display: flex; align-items: flex-end; padding: 20px; background-size: cover; background-position: center; }
         .island { background: linear-gradient(transparent, #0f172a), url('https://images.unsplash.com/photo-1501785888041-af3ef285b470'); }
         .astra { background: linear-gradient(transparent, #0f172a), url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa'); }
         .rag { background: linear-gradient(transparent, #0f172a), url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1c'); }
 
         .btn-group { padding: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-
-        .btn {
-            padding: 10px 18px; border-radius: 8px; color: white; cursor: pointer; border: none;
-            font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 8px;
-        }
-
+        .btn { padding: 10px 18px; border-radius: 8px; color: white; cursor: pointer; border: none; font-weight: bold; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
         .btn-play { background: #22c55e; }
         .btn-manual { background: #475569; }
         .btn-discord { background: #5865F2; }
 
-        .online { color: #22c55e; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .online { color: #22c55e; font-weight: bold; text-transform: uppercase; }
         .offline { color: #ef4444; }
 
-        .toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--blue-primary); color: white; padding: 12px 24px;
-            border-radius: 50px; display: none; z-index: 10001;
-        }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--blue-primary); color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 10001; }
 
-        /* Mobile Adjustments */
         @media (max-width: 850px) {
             .main-layout { flex-direction: column; }
-            .sidebar { 
-                width: 100%; height: auto; position: sticky; top: 65px; 
-                flex-direction: row; overflow-x: auto; padding: 10px;
-            }
+            .sidebar { width: 100%; height: auto; position: sticky; top: 65px; flex-direction: row; overflow-x: auto; padding: 10px; }
             .sidebar-title { display: none; }
             .sidebar-link { white-space: nowrap; }
         }
@@ -175,20 +125,15 @@
         <div class="sidebar-title">Server Directory</div>
         <div id="sidebar-links"></div>
     </div>
-
-    <div class="content">
-        <div class="logo">
-            <img src="logo.png" alt="Rhyse Gaming Logo">
-        </div>
+    <div class="content" style="flex: 1; padding: 20px; text-align: center;">
+        <div class="logo"><img src="logo.png" alt="Rhyse Gaming Logo" style="width: 180px; margin-bottom: 20px;"></div>
         <div id="servers"></div>
     </div>
 </div>
 
 <div id="toast" class="toast"></div>
 
-<footer>
-    <p>&copy; 2026 <strong>Rhyse Gaming</strong>. All Rights Reserved.</p>
-</footer>
+<footer><p>&copy; 2026 <strong>Rhyse Gaming</strong>. All Rights Reserved.</p></footer>
 
 <script>
     const servers = [
@@ -200,24 +145,23 @@
     const container = document.getElementById("servers");
     const sidebarContainer = document.getElementById("sidebar-links");
 
-    // Initialize UI
     servers.forEach(s => {
-        // Create Sidebar Link
+        // Sidebar logic
         const link = document.createElement("a");
         link.className = "sidebar-link";
-        link.href = `#${s.id}-card`;
-        link.id = `${s.id}-link`;
+        link.href = "#";
         link.innerHTML = `<span>${s.name}</span> <div class="status-dot" id="${s.id}-dot"></div>`;
         link.onclick = (e) => {
             e.preventDefault();
             const card = document.getElementById(`${s.id}-card`);
+            card.classList.add('show-manual'); // "Summon" the card if it's hidden
             card.scrollIntoView({ behavior: 'smooth' });
             card.classList.add('highlight');
             setTimeout(() => card.classList.remove('highlight'), 2000);
         };
         sidebarContainer.appendChild(link);
 
-        // Create Main Card
+        // Card logic
         const card = document.createElement("div");
         card.className = "card";
         card.id = `${s.id}-card`;
@@ -225,34 +169,16 @@
             <div class="banner ${s.id}"><h2>${s.name}</h2></div>
             <div id="${s.id}-status" style="padding: 20px 15px 5px;">Checking Status...</div>
             <div class="btn-group">
-                <button class="btn btn-play" onclick="launchGame('${s.queryPort}')">
-                    <i class="fas fa-rocket"></i> Play Now
-                </button>
-                <button class="btn btn-manual" onclick="copyJoin('${s.gamePort}')">
-                    <i class="fas fa-terminal"></i> Manual Connection
-                </button>
+                <button class="btn btn-play" onclick="launchGame('${s.queryPort}')"><i class="fas fa-rocket"></i> Play Now</button>
+                <button class="btn btn-manual" onclick="copyJoin('${s.gamePort}')"><i class="fas fa-terminal"></i> Manual Connection</button>
             </div>
         `;
         container.appendChild(card);
     });
 
-    function launchGame(qPort) {
-        window.location.href = `steam://run/2399830//+connect%20ark.rhysegaming.com:${qPort}`;
-        showToast("🚀 Launching via Steam...");
-    }
-
-    function copyJoin(gPort) {
-        const cmd = `open ark.rhysegaming.com:${gPort}`;
-        navigator.clipboard.writeText(cmd);
-        showToast("📋 Command Copied! Paste in ASA console (~)");
-    }
-
-    function showToast(msg) {
-        const t = document.getElementById("toast");
-        t.innerText = msg;
-        t.style.display = "block";
-        setTimeout(() => t.style.display = "none", 3000);
-    }
+    function launchGame(qPort) { window.location.href = `steam://run/2399830//+connect%20ark.rhysegaming.com:${qPort}`; showToast("🚀 Launching via Steam..."); }
+    function copyJoin(gPort) { navigator.clipboard.writeText(`open ark.rhysegaming.com:${gPort}`); showToast("📋 Command Copied!"); }
+    function showToast(msg) { const t = document.getElementById("toast"); t.innerText = msg; t.style.display = "block"; setTimeout(() => t.style.display = "none", 3000); }
 
     async function checkStatus(s) {
         try {
@@ -265,27 +191,21 @@
             if (data.online) {
                 card.classList.add("online-card");
                 dot.classList.add("online-dot");
-                statusEl.innerHTML = `<span class="online">● Online</span> <br> 
-                                      <small style="opacity:0.6">${data.map}</small>`;
+                statusEl.innerHTML = `<span class="online">● Online</span> <br> <small style="opacity:0.6">${data.map}</small>`;
             } else {
                 card.classList.remove("online-card");
                 dot.classList.remove("online-dot");
                 statusEl.innerHTML = `<span class="offline">● Offline</span>`;
             }
-        } catch {
-            document.getElementById(`${s.id}-status`).innerHTML = `<span class="offline">● Offline</span>`;
-        }
+        } catch { document.getElementById(`${s.id}-status`).innerHTML = `<span class="offline">● Offline</span>`; }
     }
 
     function refresh() { servers.forEach(s => checkStatus(s)); }
-    refresh();
-    setInterval(refresh, 30000);
+    refresh(); setInterval(refresh, 30000);
 
     // BACKGROUND PARTICLES
-    const c = document.getElementById('particles');
-    const x = c.getContext('2d');
-    let p = [];
-    let mouse = { x: null, y: null };
+    const c = document.getElementById('particles'); const x = c.getContext('2d');
+    let p = []; let mouse = { x: null, y: null };
     window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
     window.onresize = () => { c.width = innerWidth; c.height = innerHeight; };
     c.width = innerWidth; c.height = innerHeight;
@@ -294,19 +214,14 @@
         x.clearRect(0, 0, c.width, c.height);
         p.forEach(a => {
             a.y += a.vy; a.x += a.vx;
-            if(a.y > c.height) a.y = 0;
-            if(a.x > c.width) a.x = 0; if(a.x < 0) a.x = c.width;
+            if(a.y > c.height) a.y = 0; if(a.x > c.width) a.x = 0; if(a.x < 0) a.x = c.width;
             let dx = a.x - mouse.x; let dy = a.y - mouse.y;
             let dist = Math.sqrt(dx*dx + dy*dy);
             if(dist < 120) { a.x += dx/20; a.y += dy/20; }
-            x.beginPath(); x.arc(a.x, a.y, 1.5, 0, 6.28);
-            x.fillStyle = "rgba(96, 165, 250, 0.8)"; x.fill();
+            x.beginPath(); x.arc(a.x, a.y, 1.5, 0, 6.28); x.fillStyle = "rgba(96, 165, 250, 0.8)"; x.fill();
             p.forEach(b => {
                 let d2 = Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2);
-                if(d2 < 100) {
-                    x.strokeStyle = `rgba(96, 165, 250, ${1 - d2/100 * 0.3})`;
-                    x.lineWidth = 0.5; x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x, b.y); x.stroke();
-                }
+                if(d2 < 100) { x.strokeStyle = `rgba(96, 165, 250, ${1 - d2/100 * 0.3})`; x.lineWidth = 0.5; x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x, b.y); x.stroke(); }
             });
         });
         requestAnimationFrame(draw);
@@ -315,7 +230,7 @@
 </script>
 
 <div style="position: fixed; bottom: 15px; right: 15px; opacity: 0.1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.1'">
-    <a href="http://100.67.222.11:3001/" target="_blank" style="text-decoration: none;">⚙️</a>
+    <a href="http://100.67.222.11:3001/" target="_blank">⚙️</a>
 </div>
 
 </body>
