@@ -14,6 +14,9 @@ body {
   background: radial-gradient(circle at center, #020617, #000);
   color: white;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 canvas {
@@ -34,6 +37,11 @@ canvas {
   0% { filter: drop-shadow(0 0 10px #3b82f6); }
   50% { filter: drop-shadow(0 0 30px #3b82f6); }
   100% { filter: drop-shadow(0 0 10px #3b82f6); }
+}
+
+/* Main content wrapper to push footer down */
+.content {
+  flex: 1;
 }
 
 .card {
@@ -85,26 +93,6 @@ canvas {
 .online { color:#22c55e; }
 .offline { color:#ef4444; }
 
-.bar {
-  width: 80%;
-  height: 8px;
-  background: #1e293b;
-  margin: 8px auto;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.fill {
-  height: 100%;
-  background: linear-gradient(90deg,#22c55e,#4ade80);
-  transition: .5s;
-}
-
-.ping {
-  font-size: 12px;
-  opacity: .7;
-}
-
 .toast {
   position: fixed;
   bottom:20px;
@@ -134,6 +122,25 @@ canvas {
   border-radius:10px;
   max-width:400px;
 }
+
+/* Footer Styling */
+footer {
+  padding: 40px 20px;
+  margin-top: 50px;
+  background: rgba(15, 23, 42, 0.8);
+  border-top: 1px solid #1e293b;
+}
+
+.copyright {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+}
+
+.copyright span {
+  color: #3b82f6;
+  font-weight: bold;
+}
 </style>
 </head>
 
@@ -141,16 +148,18 @@ canvas {
 
 <canvas id="particles"></canvas>
 
-<div class="logo">
-  <img src="logo.png">
-</div>
+<div class="content">
+  <div class="logo">
+    <img src="logo.png">
+  </div>
 
-<div style="margin-top:10px;">
-  <button class="btn discord" onclick="joinDiscord()">Join Discord</button>
-  <button class="btn" onclick="window.location.href='contact.html'">Contact Us</button>
-</div>
+  <div style="margin-top:10px;">
+    <button class="btn discord" onclick="joinDiscord()">Join Discord</button>
+    <button class="btn" onclick="window.location.href='contact.html'">Contact Us</button>
+  </div>
 
-<div id="servers"></div>
+  <div id="servers"></div>
+</div>
 
 <div id="toast" class="toast"></div>
 
@@ -161,6 +170,10 @@ canvas {
     <button class="btn" onclick="closeModal()">Close</button>
   </div>
 </div>
+
+<footer>
+  <p class="copyright">&copy; <span>2026</span> Rhyse Gaming. All Rights Reserved.</p>
+</footer>
 
 <script>
 document.addEventListener("DOMContentLoaded", function(){
@@ -180,10 +193,11 @@ servers.forEach(s=>{
 
   card.innerHTML = `
     <div class="banner ${s.id}"><h2>${s.name}</h2></div>
-    <div id="${s.id}-status">Checking...</div>
+    <div id="${s.id}-status" style="padding: 15px;">Checking...</div>
   `;
 
   const btnContainer = document.createElement("div");
+  btnContainer.style.paddingBottom = "15px";
 
   const how = document.createElement("button");
   how.className = "btn";
@@ -201,7 +215,6 @@ servers.forEach(s=>{
   container.appendChild(card);
 });
 
-// MODAL
 function showModal(port){
   document.getElementById("modal").style.display="flex";
   document.getElementById("command").innerText =
@@ -218,12 +231,10 @@ window.closeModal = function(){
   document.getElementById("modal").style.display="none";
 }
 
-// DISCORD
 window.joinDiscord = function(){
   window.open("https://discord.gg/xJM3Nkce8Y","_blank");
 }
 
-// TOAST
 function toast(msg){
   const t=document.getElementById("toast");
   t.innerText = msg;
@@ -231,7 +242,6 @@ function toast(msg){
   setTimeout(()=>{ t.style.display = "none"; },2000);
 }
 
-// 🔥 FIXED API STATUS SYSTEM (NO PLAYERS)
 async function check(name, el){
  try{
   const r = await fetch(`https://api.rhysegaming.com/status/${name}`);
@@ -241,16 +251,14 @@ async function check(name, el){
 
   if(s.online){
     card.classList.add("online-card");
-
     document.getElementById(el).innerHTML = `
       <div class="online">Online</div>
-      <div class="ping">${s.map}</div>
+      <div style="font-size: 12px; opacity: .7;">${s.map}</div>
     `;
   } else {
     card.classList.remove("online-card");
     document.getElementById(el).innerHTML = `<span class="offline">Offline</span>`;
   }
-
  } catch {
   document.getElementById(el).innerHTML = `<span class="offline">Offline</span>`;
  }
@@ -265,7 +273,6 @@ function refresh(){
 refresh();
 setInterval(refresh,30000);
 
-// PARTICLES (unchanged)
 const c=document.getElementById('particles');
 const x=c.getContext('2d');
 c.width=innerWidth;
@@ -278,21 +285,17 @@ for(let i=0;i<80;i++){
 
 function draw(){
   x.clearRect(0,0,c.width,c.height);
-
   p.forEach(a=>{
     a.y+=0.5;
     if(a.y>c.height)a.y=0;
-
     x.beginPath();
     x.arc(a.x,a.y,2,0,6.28);
     x.fillStyle="#60a5fa";
     x.fill();
-
     p.forEach(b=>{
       let dx=a.x-b.x;
       let dy=a.y-b.y;
       let dist=Math.sqrt(dx*dx+dy*dy);
-
       if(dist<80){
         x.strokeStyle="rgba(96,165,250,0.2)";
         x.beginPath();
@@ -302,23 +305,18 @@ function draw(){
       }
     });
   });
-
   requestAnimationFrame(draw);
 }
-
 draw();
-// Check if the user was redirected from the contact form
+
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get('status') === 'sent') {
-  // Use your existing toast function!
   toast("🚀 Message sent! I'll get back to you soon.");
-  
-  // Clean up the URL so the toast doesn't pop up again if they refresh
   window.history.replaceState({}, document.title, window.location.pathname);
 }
 });
 </script>
-<!-- Hidden Admin Gear -->
+
 <div style="position: fixed; bottom: 15px; right: 15px; opacity: 0.2; transition: 0.3s;" 
      onmouseover="this.style.opacity='1'" 
      onmouseout="this.style.opacity='0.2'">
