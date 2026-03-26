@@ -66,9 +66,27 @@
         .status-dot { height: 8px; width: 8px; border-radius: 50%; background: #ef4444; }
         .status-dot.online-dot { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
 
+        /* Content Area & Logo Fix */
+        .content { flex: 1; padding: 40px 20px; text-align: center; }
+
+        .logo-container { margin-bottom: 40px; }
+        
+        .logo-container img { 
+            width: 220px; 
+            height: auto;
+            animation: glowPulse 3s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes glowPulse {
+            0% { filter: drop-shadow(0 0 10px var(--blue-glow)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 25px var(--blue-glow)); transform: scale(1.02); }
+            100% { filter: drop-shadow(0 0 10px var(--blue-glow)); transform: scale(1); }
+        }
+
         /* Server Cards Hiding Logic */
         .card { 
-            display: none; /* Hidden by default */
+            display: none; 
             max-width: 600px; margin: 0 auto 30px; border-radius: 15px;
             background: var(--card-bg); backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden;
@@ -76,10 +94,8 @@
             scroll-margin-top: 100px;
         }
 
-        /* Show if Online OR manually selected from Sidebar */
         .card.online-card, .card.show-manual { display: block; }
-
-        .card.highlight { border-color: var(--blue-glow); transform: scale(1.02); }
+        .card.highlight { border-color: var(--blue-glow); box-shadow: 0 0 30px rgba(59, 130, 246, 0.4); }
         .online-card { border-left: 4px solid #22c55e; }
 
         .banner { height: 140px; display: flex; align-items: flex-end; padding: 20px; background-size: cover; background-position: center; }
@@ -100,9 +116,10 @@
 
         @media (max-width: 850px) {
             .main-layout { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: sticky; top: 65px; flex-direction: row; overflow-x: auto; padding: 10px; }
+            .sidebar { width: 100%; height: auto; position: sticky; top: 65px; flex-direction: row; overflow-x: auto; padding: 10px; z-index: 100; }
             .sidebar-title { display: none; }
             .sidebar-link { white-space: nowrap; }
+            .logo-container img { width: 180px; }
         }
 
         footer { padding: 30px; background: rgba(15, 23, 42, 0.8); border-top: 1px solid #1e293b; text-align: center; }
@@ -125,8 +142,10 @@
         <div class="sidebar-title">Server Directory</div>
         <div id="sidebar-links"></div>
     </div>
-    <div class="content" style="flex: 1; padding: 20px; text-align: center;">
-        <div class="logo"><img src="logo.png" alt="Rhyse Gaming Logo" style="width: 180px; margin-bottom: 20px;"></div>
+    <div class="content">
+        <div class="logo-container">
+            <img src="logo.png" alt="Rhyse Gaming Logo">
+        </div>
         <div id="servers"></div>
     </div>
 </div>
@@ -154,7 +173,7 @@
         link.onclick = (e) => {
             e.preventDefault();
             const card = document.getElementById(`${s.id}-card`);
-            card.classList.add('show-manual'); // "Summon" the card if it's hidden
+            card.classList.add('show-manual');
             card.scrollIntoView({ behavior: 'smooth' });
             card.classList.add('highlight');
             setTimeout(() => card.classList.remove('highlight'), 2000);
