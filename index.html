@@ -63,26 +63,27 @@
 
         .sidebar-link:hover { background: rgba(59, 130, 246, 0.1); border-color: var(--blue-glow); }
         
-        .status-dot { height: 8px; width: 8px; border-radius: 50%; background: #ef4444; }
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; background: #ef4444; transition: 0.3s; }
         .status-dot.online-dot { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
 
         /* Content Area & Logo Fix */
         .content { flex: 1; padding: 40px 20px; text-align: center; }
-
         .logo-container { margin-bottom: 40px; }
-        
-        .logo-container img { 
-            width: 220px; 
-            height: auto;
-            animation: glowPulse 3s infinite ease-in-out;
-            pointer-events: none;
-        }
+        .logo-container img { width: 220px; height: auto; animation: glowPulse 3s infinite ease-in-out; pointer-events: none; }
 
         @keyframes glowPulse {
-            0% { filter: drop-shadow(0 0 10px var(--blue-glow)); transform: scale(1); }
+            0%, 100% { filter: drop-shadow(0 0 10px var(--blue-glow)); transform: scale(1); }
             50% { filter: drop-shadow(0 0 25px var(--blue-glow)); transform: scale(1.02); }
-            100% { filter: drop-shadow(0 0 10px var(--blue-glow)); transform: scale(1); }
         }
+
+        /* Empty State Hub */
+        #empty-hub {
+            display: none; max-width: 500px; margin: 40px auto; padding: 40px;
+            background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(59, 130, 246, 0.4);
+            border-radius: 20px; backdrop-filter: blur(10px);
+        }
+        #empty-hub h3 { color: var(--blue-glow); margin: 0 0 10px; }
+        #empty-hub p { color: #94a3b8; font-size: 0.9rem; line-height: 1.6; }
 
         /* Server Cards Hiding Logic */
         .card { 
@@ -143,9 +144,15 @@
         <div id="sidebar-links"></div>
     </div>
     <div class="content">
-        <div class="logo-container">
-            <img src="logo.png" alt="Rhyse Gaming Logo">
+        <div class="logo-container"><img src="logo.png" alt="Rhyse Gaming Logo"></div>
+        
+        <div id="empty-hub">
+            <i class="fas fa-satellite-dish" style="font-size: 2.5rem; color: #475569; margin-bottom: 15px;"></i>
+            <h3>Cluster Standby</h3>
+            <p>Servers are currently being updated or maintained. Use the sidebar to check individual maps or join Discord for live pings!</p>
+            <button class="btn btn-discord" style="margin: 15px auto 0;" onclick="window.open('https://discord.gg/xJM3Nkce8Y')"><i class="fab fa-discord"></i> Join Discord</button>
         </div>
+
         <div id="servers"></div>
     </div>
 </div>
@@ -165,7 +172,6 @@
     const sidebarContainer = document.getElementById("sidebar-links");
 
     servers.forEach(s => {
-        // Sidebar logic
         const link = document.createElement("a");
         link.className = "sidebar-link";
         link.href = "#";
@@ -173,23 +179,23 @@
         link.onclick = (e) => {
             e.preventDefault();
             const card = document.getElementById(`${s.id}-card`);
-            card.classList.add('show-manual');
+            card.classList.add('show-manual'); 
             card.scrollIntoView({ behavior: 'smooth' });
             card.classList.add('highlight');
-            setTimeout(() => card.classList.remove('highlight'), 2000);
+            setTimeout(() => { card.classList.remove('highlight'); updateEmptyHub(); }, 2000);
+            updateEmptyHub();
         };
         sidebarContainer.appendChild(link);
 
-        // Card logic
         const card = document.createElement("div");
         card.className = "card";
         card.id = `${s.id}-card`;
         card.innerHTML = `
             <div class="banner ${s.id}"><h2>${s.name}</h2></div>
-            <div id="${s.id}-status" style="padding: 20px 15px 5px;">Checking Status...</div>
+            <div id="${s.id}-status" style="padding: 20px 15px 5px;">Checking...</div>
             <div class="btn-group">
                 <button class="btn btn-play" onclick="launchGame('${s.queryPort}')"><i class="fas fa-rocket"></i> Play Now</button>
-                <button class="btn btn-manual" onclick="copyJoin('${s.gamePort}')"><i class="fas fa-terminal"></i> Manual Connection</button>
+                <button class="btn btn-manual" onclick="copyJoin('${s.gamePort}')"><i class="fas fa-terminal"></i> Manual</button>
             </div>
         `;
         container.appendChild(card);
@@ -198,6 +204,11 @@
     function launchGame(qPort) { window.location.href = `steam://run/2399830//+connect%20ark.rhysegaming.com:${qPort}`; showToast("🚀 Launching via Steam..."); }
     function copyJoin(gPort) { navigator.clipboard.writeText(`open ark.rhysegaming.com:${gPort}`); showToast("📋 Command Copied!"); }
     function showToast(msg) { const t = document.getElementById("toast"); t.innerText = msg; t.style.display = "block"; setTimeout(() => t.style.display = "none", 3000); }
+
+    function updateEmptyHub() {
+        const visibleCards = document.querySelectorAll('.card.online-card, .card.show-manual').length;
+        document.getElementById('empty-hub').style.display = (visibleCards === 0) ? 'block' : 'none';
+    }
 
     async function checkStatus(s) {
         try {
@@ -216,7 +227,10 @@
                 dot.classList.remove("online-dot");
                 statusEl.innerHTML = `<span class="offline">● Offline</span>`;
             }
-        } catch { document.getElementById(`${s.id}-status`).innerHTML = `<span class="offline">● Offline</span>`; }
+        } catch { 
+            document.getElementById(`${s.id}-status`).innerHTML = `<span class="offline">● Offline</span>`;
+        }
+        updateEmptyHub();
     }
 
     function refresh() { servers.forEach(s => checkStatus(s)); }
