@@ -54,6 +54,7 @@ nav {
   font-size: 1.2rem;
   color: var(--blue-glow);
   text-decoration: none;
+  letter-spacing: 1px;
 }
 
 .nav-links {
@@ -143,7 +144,6 @@ nav {
   .nav-links .btn { margin: 10px 20%; }
 }
 
-/* Toast & Footer */
 .toast {
   position: fixed;
   bottom:20px;
@@ -197,7 +197,6 @@ footer {
 </footer>
 
 <script>
-// Mobile Menu Toggle
 function toggleMenu() {
   document.getElementById('navLinks').classList.toggle('active');
 }
@@ -239,7 +238,6 @@ document.addEventListener("DOMContentLoaded", function(){
     container.appendChild(card);
   });
 
-  // Discord & Toast
   window.joinDiscord = function(){ window.open("https://discord.gg/xJM3Nkce8Y","_blank"); }
   function toast(msg){
     const t=document.getElementById("toast");
@@ -248,7 +246,6 @@ document.addEventListener("DOMContentLoaded", function(){
     setTimeout(()=>{ t.style.display = "none"; },2500);
   }
 
-  // API Refresh
   async function check(name, el){
     try {
       const r = await fetch(`https://api.rhysegaming.com/status/${name}`);
@@ -270,17 +267,49 @@ document.addEventListener("DOMContentLoaded", function(){
   refresh();
   setInterval(refresh,30000);
 
-  // Particles (Background)
+  // RESTORED: Bright stars & Connection lines
   const c=document.getElementById('particles');
   const x=c.getContext('2d');
   c.width=innerWidth; c.height=innerHeight;
+  
   let p=[];
-  for(let i=0;i<60;i++){ p.push({x:Math.random()*c.width,y:Math.random()*c.height}); }
+  for(let i=0;i<80;i++){ 
+    p.push({
+      x:Math.random()*c.width,
+      y:Math.random()*c.height,
+      vx: (Math.random() - 0.5) * 0.2, // Small horizontal drift
+      vy: 0.5 // Falling speed
+    }); 
+  }
+
   function draw(){
     x.clearRect(0,0,c.width,c.height);
     p.forEach(a=>{
-      a.y+=0.3; if(a.y>c.height)a.y=0;
-      x.beginPath(); x.arc(a.x,a.y,1.5,0,6.28); x.fillStyle="rgba(96,165,250,0.5)"; x.fill();
+      a.y += a.vy;
+      a.x += a.vx;
+      if(a.y > c.height) a.y = 0;
+      if(a.x > c.width) a.x = 0;
+      if(a.x < 0) a.x = c.width;
+
+      x.beginPath(); 
+      x.arc(a.x,a.y,2,0,6.28); 
+      x.fillStyle="#60a5fa"; 
+      x.fill();
+
+      // RESTORED: Connection lines between stars
+      p.forEach(b=>{
+        let dx = a.x - b.x;
+        let dy = a.y - b.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < 90){
+          x.strokeStyle = `rgba(96, 165, 250, ${1 - dist/90 * 0.5})`; // Fades out with distance
+          x.lineWidth = 0.5;
+          x.beginPath();
+          x.moveTo(a.x, a.y);
+          x.lineTo(b.x, b.y);
+          x.stroke();
+        }
+      });
     });
     requestAnimationFrame(draw);
   }
