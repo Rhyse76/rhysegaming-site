@@ -50,8 +50,6 @@
             padding: 30px 15px;
             display: flex; flex-direction: column; gap: 10px;
             position: sticky; top: 65px; height: calc(100vh - 65px);
-            
-            /* Smooth Swipe for growth */
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none; 
         }
@@ -72,7 +70,6 @@
         .status-dot { height: 8px; width: 8px; border-radius: 50%; background: #ef4444; transition: 0.3s; }
         .status-dot.online-dot { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
 
-        /* Content Area & Logo Fix */
         .content { flex: 1; padding: 40px 20px; text-align: center; }
         .logo-container { margin-bottom: 40px; }
         .logo-container img { width: 220px; height: auto; animation: glowPulse 3s infinite ease-in-out; pointer-events: none; }
@@ -82,7 +79,6 @@
             50% { filter: drop-shadow(0 0 25px var(--blue-glow)); transform: scale(1.02); }
         }
 
-        /* Empty State Hub */
         #empty-hub {
             display: none; max-width: 500px; margin: 40px auto; padding: 40px;
             background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(59, 130, 246, 0.4);
@@ -91,7 +87,6 @@
         #empty-hub h3 { color: var(--blue-glow); margin: 0 0 10px; }
         #empty-hub p { color: #94a3b8; font-size: 0.9rem; line-height: 1.6; }
 
-        /* Server Cards Logic */
         .card { 
             display: none; 
             max-width: 600px; margin: 0 auto 30px; border-radius: 15px;
@@ -207,8 +202,19 @@
         container.appendChild(card);
     });
 
-    function launchGame(qPort) { window.location.href = `steam://run/2399830//+connect%20ark.rhysegaming.com:${qPort}`; showToast("🚀 Launching via Steam..."); }
-    function copyJoin(gPort) { navigator.clipboard.writeText(`open ark.rhysegaming.com:${gPort}`); showToast("📋 Command Copied!"); }
+    // Updated launch logic for better reliability
+    function launchGame(qPort) { 
+        window.location.href = `steam://connect/ark.rhysegaming.com:${qPort}`; 
+        showToast("🚀 Steam joining server..."); 
+    }
+
+    // Includes the full join command for the in-game console
+    function copyJoin(gPort) { 
+        const command = `open ark.rhysegaming.com:${gPort}`;
+        navigator.clipboard.writeText(command); 
+        showToast("📋 Join Command Copied!"); 
+    }
+
     function showToast(msg) { const t = document.getElementById("toast"); t.innerText = msg; t.style.display = "block"; setTimeout(() => t.style.display = "none", 3000); }
 
     function updateEmptyHub() {
@@ -242,6 +248,7 @@
     function refresh() { servers.forEach(s => checkStatus(s)); }
     refresh(); setInterval(refresh, 30000);
 
+    // Particle Animation
     const c = document.getElementById('particles'); const x = c.getContext('2d');
     let p = []; let mouse = { x: null, y: null };
     window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
