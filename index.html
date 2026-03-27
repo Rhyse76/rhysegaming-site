@@ -70,6 +70,7 @@
         .status-dot { height: 8px; width: 8px; border-radius: 50%; background: #ef4444; transition: 0.3s; }
         .status-dot.online-dot { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
 
+        /* Content Area */
         .content { flex: 1; padding: 40px 20px; text-align: center; }
         .logo-container { margin-bottom: 40px; }
         .logo-container img { width: 220px; height: auto; animation: glowPulse 3s infinite ease-in-out; pointer-events: none; }
@@ -87,6 +88,7 @@
         #empty-hub h3 { color: var(--blue-glow); margin: 0 0 10px; }
         #empty-hub p { color: #94a3b8; font-size: 0.9rem; line-height: 1.6; }
 
+        /* Server Cards */
         .card { 
             display: none; 
             max-width: 600px; margin: 0 auto 30px; border-radius: 15px;
@@ -202,13 +204,14 @@
         container.appendChild(card);
     });
 
-    // Updated launch logic for better reliability
+    // UPDATED: "Aggressive Launch" function using App ID +connect argument
     function launchGame(qPort) { 
-        window.location.href = `steam://connect/ark.rhysegaming.com:${qPort}`; 
-        showToast("🚀 Steam joining server..."); 
+        const serverIP = "ark.rhysegaming.com";
+        // This launches the ASA game app specifically and passes the join command
+        window.location.href = `steam://run/2399830//+connect%20${serverIP}:${qPort}`; 
+        showToast("🚀 Launching ARK: Survival Ascended..."); 
     }
 
-    // Includes the full join command for the in-game console
     function copyJoin(gPort) { 
         const command = `open ark.rhysegaming.com:${gPort}`;
         navigator.clipboard.writeText(command); 
@@ -248,7 +251,6 @@
     function refresh() { servers.forEach(s => checkStatus(s)); }
     refresh(); setInterval(refresh, 30000);
 
-    // Particle Animation
     const c = document.getElementById('particles'); const x = c.getContext('2d');
     let p = []; let mouse = { x: null, y: null };
     window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
