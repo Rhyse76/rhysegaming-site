@@ -55,7 +55,6 @@
         }
 
         .sidebar::-webkit-scrollbar { display: none; }
-
         .sidebar-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: #64748b; margin-bottom: 15px; text-align: left; padding-left: 10px; }
 
         .sidebar-link {
@@ -115,6 +114,7 @@
 
         .online { color: #22c55e; font-weight: bold; text-transform: uppercase; }
         .offline { color: #ef4444; }
+        .player-count { color: #3b82f6; font-weight: bold; margin-left: 10px; background: rgba(59, 130, 246, 0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; }
 
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--blue-primary); color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 10001; }
 
@@ -204,10 +204,8 @@
         container.appendChild(card);
     });
 
-    // UPDATED: "Aggressive Launch" function using App ID +connect argument
     function launchGame(qPort) { 
         const serverIP = "ark.rhysegaming.com";
-        // This launches the ASA game app specifically and passes the join command
         window.location.href = `steam://run/2399830//+connect%20${serverIP}:${qPort}`; 
         showToast("🚀 Launching ARK: Survival Ascended..."); 
     }
@@ -225,8 +223,10 @@
         document.getElementById('empty-hub').style.display = (visibleCards === 0) ? 'block' : 'none';
     }
 
+    // --- UPDATED: Connects to your Public API with Player Counts ---
     async function checkStatus(s) {
         try {
+            // Using your dedicated Public API route
             const r = await fetch(`https://api.rhysegaming.com/status/${s.id}`);
             const data = await r.json();
             const statusEl = document.getElementById(`${s.id}-status`);
@@ -236,7 +236,13 @@
             if (data.online) {
                 card.classList.add("online-card");
                 dot.classList.add("online-dot");
-                statusEl.innerHTML = `<span class="online">● Online</span> <br> <small style="opacity:0.6">${data.map}</small>`;
+                statusEl.innerHTML = `
+                    <div style="display:flex; justify-content:center; align-items:center;">
+                        <span class="online">● Online</span> 
+                        <span class="player-count"><i class="fas fa-users"></i> ${data.players || 0}</span>
+                    </div>
+                    <small style="opacity:0.6">${s.name} Cluster</small>
+                `;
             } else {
                 card.classList.remove("online-card");
                 dot.classList.remove("online-dot");
