@@ -50,11 +50,8 @@
             padding: 30px 15px;
             display: flex; flex-direction: column; gap: 10px;
             position: sticky; top: 65px; height: calc(100vh - 65px);
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; 
         }
 
-        .sidebar::-webkit-scrollbar { display: none; }
         .sidebar-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: #64748b; margin-bottom: 15px; text-align: left; padding-left: 10px; }
 
         .sidebar-link {
@@ -84,8 +81,6 @@
             background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(59, 130, 246, 0.4);
             border-radius: 20px; backdrop-filter: blur(10px);
         }
-        #empty-hub h3 { color: var(--blue-glow); margin: 0 0 10px; }
-        #empty-hub p { color: #94a3b8; font-size: 0.9rem; line-height: 1.6; }
 
         /* Server Cards */
         .card { 
@@ -94,7 +89,6 @@
             background: var(--card-bg); backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden;
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            scroll-margin-top: 100px;
         }
 
         .card.online-card, .card.show-manual { display: block; }
@@ -114,16 +108,13 @@
 
         .online { color: #22c55e; font-weight: bold; text-transform: uppercase; }
         .offline { color: #ef4444; }
-        .player-count { color: #3b82f6; font-weight: bold; margin-left: 10px; background: rgba(59, 130, 246, 0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.85rem; }
+        .player-pill { background: rgba(59, 130, 246, 0.2); color: var(--blue-glow); padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; margin-left: 10px; font-weight: bold; border: 1px solid var(--blue-glow); }
 
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--blue-primary); color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 10001; }
 
         @media (max-width: 850px) {
-            .main-layout { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: sticky; top: 65px; flex-direction: row; overflow-x: auto; padding: 10px; z-index: 100; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+            .sidebar { width: 100%; height: auto; position: sticky; top: 65px; flex-direction: row; overflow-x: auto; padding: 10px; }
             .sidebar-title { display: none; }
-            .sidebar-link { white-space: nowrap; flex: 0 0 auto; }
-            .logo-container img { width: 180px; }
         }
 
         footer { padding: 30px; background: rgba(15, 23, 42, 0.8); border-top: 1px solid #1e293b; text-align: center; }
@@ -152,8 +143,8 @@
         <div id="empty-hub">
             <i class="fas fa-satellite-dish" style="font-size: 2.5rem; color: #475569; margin-bottom: 15px;"></i>
             <h3>Cluster Standby</h3>
-            <p>Servers are currently being updated or maintained. Use the sidebar to check individual maps or join Discord for live pings!</p>
-            <button class="btn btn-discord" style="margin: 15px auto 0;" onclick="window.open('https://discord.gg/xJM3Nkce8Y')"><i class="fab fa-discord"></i> Join Discord</button>
+            <p>Servers are currently being maintained. Join Discord for live pings!</p>
+            <button class="btn btn-discord" style="margin: 15px auto 0;" onclick="window.open('https://discord.gg/xJM3Nkce8Y')">Join Discord</button>
         </div>
 
         <div id="servers"></div>
@@ -166,15 +157,16 @@
 
 <script>
     const servers = [
-        { name: "The Island", id: "island", gamePort: 7777, queryPort: 27025 },
-        { name: "Astraeos", id: "astra", gamePort: 7877, queryPort: 27027 },
-        { name: "Ragnarok", id: "rag", gamePort: 7977, queryPort: 27029 }
+        { name: "The Island", id: "island", gamePort: 7777, queryPort: 27020 },
+        { name: "Astraeos", id: "astra", gamePort: 7877, queryPort: 27021 },
+        { name: "Ragnarok", id: "rag", gamePort: 7977, queryPort: 27022 }
     ];
 
     const container = document.getElementById("servers");
     const sidebarContainer = document.getElementById("sidebar-links");
 
     servers.forEach(s => {
+        // Build Sidebar
         const link = document.createElement("a");
         link.className = "sidebar-link";
         link.href = "#";
@@ -185,17 +177,18 @@
             card.classList.add('show-manual'); 
             card.scrollIntoView({ behavior: 'smooth' });
             card.classList.add('highlight');
-            setTimeout(() => { card.classList.remove('highlight'); updateEmptyHub(); }, 2000);
+            setTimeout(() => { card.classList.remove('highlight'); }, 2000);
             updateEmptyHub();
         };
         sidebarContainer.appendChild(link);
 
+        // Build Card
         const card = document.createElement("div");
         card.className = "card";
         card.id = `${s.id}-card`;
         card.innerHTML = `
             <div class="banner ${s.id}"><h2>${s.name}</h2></div>
-            <div id="${s.id}-status" style="padding: 20px 15px 5px;">Checking...</div>
+            <div id="${s.id}-status" style="padding: 20px 15px 5px; display: flex; align-items: center; justify-content: center;">Checking...</div>
             <div class="btn-group">
                 <button class="btn btn-play" onclick="launchGame('${s.queryPort}')"><i class="fas fa-rocket"></i> Play Now</button>
                 <button class="btn btn-manual" onclick="copyJoin('${s.gamePort}')"><i class="fas fa-terminal"></i> Manual</button>
@@ -205,14 +198,12 @@
     });
 
     function launchGame(qPort) { 
-        const serverIP = "ark.rhysegaming.com";
-        window.location.href = `steam://run/2399830//+connect%20${serverIP}:${qPort}`; 
-        showToast("🚀 Launching ARK: Survival Ascended..."); 
+        window.location.href = `steam://run/2399830//+connect%20ark.rhysegaming.com:${qPort}`; 
+        showToast("🚀 Launching ARK..."); 
     }
 
     function copyJoin(gPort) { 
-        const command = `open ark.rhysegaming.com:${gPort}`;
-        navigator.clipboard.writeText(command); 
+        navigator.clipboard.writeText(`open ark.rhysegaming.com:${gPort}`); 
         showToast("📋 Join Command Copied!"); 
     }
 
@@ -223,10 +214,9 @@
         document.getElementById('empty-hub').style.display = (visibleCards === 0) ? 'block' : 'none';
     }
 
-    // --- UPDATED: Connects to your Public API with Player Counts ---
+    // --- RE-SYNCHRONIZED WITH CLOUDFLARE ---
     async function checkStatus(s) {
         try {
-            // Using your dedicated Public API route
             const r = await fetch(`https://api.rhysegaming.com/status/${s.id}`);
             const data = await r.json();
             const statusEl = document.getElementById(`${s.id}-status`);
@@ -236,19 +226,13 @@
             if (data.online) {
                 card.classList.add("online-card");
                 dot.classList.add("online-dot");
-                statusEl.innerHTML = `
-                    <div style="display:flex; justify-content:center; align-items:center;">
-                        <span class="online">● Online</span> 
-                        <span class="player-count"><i class="fas fa-users"></i> ${data.players || 0}</span>
-                    </div>
-                    <small style="opacity:0.6">${s.name} Cluster</small>
-                `;
+                statusEl.innerHTML = `<span class="online">● Online</span> <span class="player-pill">${data.players || 0} Survivors</span>`;
             } else {
                 card.classList.remove("online-card");
                 dot.classList.remove("online-dot");
                 statusEl.innerHTML = `<span class="offline">● Offline</span>`;
             }
-        } catch { 
+        } catch (err) { 
             document.getElementById(`${s.id}-status`).innerHTML = `<span class="offline">● Offline</span>`;
         }
         updateEmptyHub();
@@ -257,34 +241,21 @@
     function refresh() { servers.forEach(s => checkStatus(s)); }
     refresh(); setInterval(refresh, 30000);
 
+    // Particles Script
     const c = document.getElementById('particles'); const x = c.getContext('2d');
-    let p = []; let mouse = { x: null, y: null };
-    window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
-    window.onresize = () => { c.width = innerWidth; c.height = innerHeight; };
-    c.width = innerWidth; c.height = innerHeight;
+    let p = []; c.width = innerWidth; c.height = innerHeight;
     for(let i=0; i<80; i++) p.push({ x:Math.random()*c.width, y:Math.random()*c.height, vx:(Math.random()-0.5)*0.3, vy:0.6 });
     function draw() {
         x.clearRect(0, 0, c.width, c.height);
         p.forEach(a => {
             a.y += a.vy; a.x += a.vx;
-            if(a.y > c.height) a.y = 0; if(a.x > c.width) a.x = 0; if(a.x < 0) a.x = c.width;
-            let dx = a.x - mouse.x; let dy = a.y - mouse.y;
-            let dist = Math.sqrt(dx*dx + dy*dy);
-            if(dist < 120) { a.x += dx/20; a.y += dy/20; }
+            if(a.y > c.height) a.y = 0; if(a.x < 0) a.x = c.width;
             x.beginPath(); x.arc(a.x, a.y, 1.5, 0, 6.28); x.fillStyle = "rgba(96, 165, 250, 0.8)"; x.fill();
-            p.forEach(b => {
-                let d2 = Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2);
-                if(d2 < 100) { x.strokeStyle = `rgba(96, 165, 250, ${1 - d2/100 * 0.3})`; x.lineWidth = 0.5; x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x, b.y); x.stroke(); }
-            });
         });
         requestAnimationFrame(draw);
     }
     draw();
 </script>
-
-<div style="position: fixed; bottom: 15px; right: 15px; opacity: 0.1;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.1'">
-    <a href="http://100.67.222.11:3001/" target="_blank">⚙️</a>
-</div>
 
 </body>
 </html>
