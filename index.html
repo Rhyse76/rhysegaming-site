@@ -101,15 +101,6 @@
         .offline { color: #ef4444; }
         .player-pill { background: rgba(59, 130, 246, 0.2); color: var(--blue-glow); padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; margin-left: 10px; font-weight: bold; border: 1px solid var(--blue-glow); }
 
-        .admin-link {
-            position: fixed; bottom: 20px; right: 20px;
-            width: 45px; height: 45px; background: rgba(15, 23, 42, 0.6);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #64748b; text-decoration: none; border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: 0.3s; z-index: 10000;
-        }
-        .admin-link:hover { color: var(--blue-glow); border-color: var(--blue-glow); transform: rotate(90deg); }
-
         @media (max-width: 850px) {
             .sidebar { width: 100%; height: auto; position: sticky; top: 65px; flex-direction: row; overflow-x: auto; padding: 10px; }
             .sidebar-title { display: none; }
@@ -141,9 +132,9 @@
     </div>
 </div>
 
-<a href="https://api.rhysegaming.com" class="admin-link" title="Control Panel">
-    <i class="fas fa-cog"></i>
-</a>
+<div style="position: fixed; bottom: 15px; right: 15px; opacity: 0.15; z-index: 10001;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.15'">
+    <a href="https://api.rhysegaming.com" target="_blank" style="text-decoration: none; font-size: 24px;">⚙️</a>
+</div>
 
 <footer><p>&copy; 2026 <strong>Rhyse Gaming</strong>. All Rights Reserved.</p></footer>
 
@@ -219,40 +210,35 @@
     function refresh() { servers.forEach(s => checkStatus(s)); }
     refresh(); setInterval(refresh, 30000);
 
-    // --- RESTORED PARTICLE LINES SCRIPT ---
+    // --- EXACT CONTACT PAGE PARTICLE LOGIC ---
     const c = document.getElementById('particles'); const x = c.getContext('2d');
-    let p = []; let m = { x: null, y: null };
-    function resize() { c.width = window.innerWidth; c.height = window.innerHeight; }
-    window.onresize = resize; resize();
-    
-    window.onmousemove = (e) => { m.x = e.clientX; m.y = e.clientY; };
-    window.onmouseout = () => { m.x = null; m.y = null; };
+    let p = []; let mouse = { x: null, y: null };
+    window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+    window.onresize = () => { c.width = innerWidth; c.height = innerHeight; };
+    c.width = innerWidth; c.height = innerHeight;
 
     for(let i=0; i<80; i++) p.push({ x:Math.random()*c.width, y:Math.random()*c.height, vx:(Math.random()-0.5)*0.3, vy:0.6 });
-    
-    function draw() {
-        x.clearRect(0, 0, c.width, c.height);
-        p.forEach(a => {
+
+    function draw(){
+        x.clearRect(0,0,c.width,c.height);
+        p.forEach(a=>{
             a.y += a.vy; a.x += a.vx;
-            if(a.y > c.height) a.y = 0; if(a.x < 0) a.x = c.width; if(a.x > c.width) a.x = 0;
+            if(a.y > c.height) a.y = 0; if(a.x > c.width) a.x = 0; if(a.x < 0) a.x = c.width;
             
-            x.beginPath(); x.arc(a.x, a.y, 1.5, 0, 6.28); x.fillStyle = "rgba(96, 165, 250, 0.8)"; x.fill();
+            // Mouse Repulsion Physics
+            let dx = a.x - mouse.x, dy = a.y - mouse.y, dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < 120) { a.x += dx/20; a.y += dy/20; }
             
-            p.forEach(b => {
-                let dx = a.x - b.x, dy = a.y - b.y, d = Math.sqrt(dx*dx + dy*dy);
-                if(d < 100) {
-                    x.strokeStyle = `rgba(59, 130, 246, ${1 - d/100 * 0.5})`;
+            x.beginPath(); x.arc(a.x,a.y,1.5,0,6.28); x.fillStyle="rgba(96, 165, 250, 0.8)"; x.fill();
+            
+            // Inter-particle Connection Physics
+            p.forEach(b=>{
+                let d2 = Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2);
+                if(d2 < 100){
+                    x.strokeStyle = `rgba(96, 165, 250, ${1 - d2/100 * 0.3})`;
                     x.lineWidth = 0.5; x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x, b.y); x.stroke();
                 }
             });
-
-            if(m.x) {
-                let dx = a.x - m.x, dy = a.y - m.y, d = Math.sqrt(dx*dx + dy*dy);
-                if(d < 150) {
-                    x.strokeStyle = `rgba(59, 130, 246, ${1 - d/150})`;
-                    x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(m.x, m.y); x.stroke();
-                }
-            }
         });
         requestAnimationFrame(draw);
     }
