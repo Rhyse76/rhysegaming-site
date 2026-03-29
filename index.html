@@ -155,7 +155,15 @@
     </div>
     <div class="content">
         <div class="logo-container"><img src="logo.png" alt="Rhyse Gaming Logo"></div>
+        
         <div id="servers"></div>
+
+        <div id="offline-message" class="card" style="display: none; padding: 40px; text-align: center; border-left: 4px solid #ef4444; margin-top: 20px;">
+            <i class="fas fa-exclamation-triangle fa-3x" style="color: #ef4444; margin-bottom: 15px;"></i>
+            <h3 style="margin: 0 0 10px 0;">Cluster is Currently Offline</h3>
+            <p style="color: #94a3b8; margin: 0;">The ARK cluster is down for maintenance or updates.<br>Click a server on the left to view details, or check <a href="https://discord.gg/xJM3Nkce8Y" style="color: var(--blue-glow); text-decoration: none;">Discord</a> for announcements!</p>
+        </div>
+
     </div>
 </div>
 
@@ -186,7 +194,7 @@
             e.preventDefault();
             const card = document.getElementById(`${s.id}-card`);
             
-            // TWEAK 1: Changed .add to .toggle so the sidebar link works as an open/close switch
+            // Toggle sidebar click behavior
             card.classList.toggle('show-manual'); 
             card.scrollIntoView({ behavior: 'smooth' });
             card.classList.add('highlight');
@@ -212,10 +220,9 @@
         window.location.href = `steam://run/2399830//+connect%20ark.rhysegaming.com:${qPort}`; 
     }
 
-    // THE FIX FOR THE POPUP
     function copyJoin(gPort) { 
         navigator.clipboard.writeText(`open ark.rhysegaming.com:${gPort}`); 
-        showToast(); // Triggers the popup
+        showToast(); 
     }
 
     function showToast() {
@@ -236,12 +243,13 @@
                 card.classList.add("online-card");
                 dot.classList.add("online-dot");
                 statusEl.innerHTML = `<span class="online">● Online</span> <span class="player-pill">${data.players || 0} Survivors</span>`;
+                return true; 
             } else {
                 card.classList.remove("online-card");
                 dot.classList.remove("online-dot");
                 statusEl.innerHTML = `<span class="offline">● Offline</span>`;
+                return false;
             }
-        // TWEAK 2: Added logic here to ensure offline styling strips the green borders
         } catch (err) { 
             const statusEl = document.getElementById(`${s.id}-status`);
             const card = document.getElementById(`${s.id}-card`);
@@ -250,13 +258,29 @@
             card.classList.remove("online-card");
             dot.classList.remove("online-dot");
             statusEl.innerHTML = `<span class="offline">● Offline</span>`;
+            return false;
         }
     }
 
-    function refresh() { servers.forEach(s => checkStatus(s)); }
+    async function refresh() { 
+        // Run all API checks simultaneously
+        const results = await Promise.all(servers.map(s => checkStatus(s)));
+        
+        // Count the online servers
+        const onlineCount = results.filter(status => status === true).length;
+        
+        // Toggle the offline message
+        const offlineMsg = document.getElementById("offline-message");
+        if (onlineCount === 0) {
+            offlineMsg.style.display = "block";
+        } else {
+            offlineMsg.style.display = "none";
+        }
+    }
+    
     refresh(); setInterval(refresh, 30000);
 
-    // --- EXACT CONTACT PAGE PARTICLE LOGIC ---
+    // --- PARTICLE LOGIC ---
     const c = document.getElementById('particles'); const x = c.getContext('2d');
     let p = []; let mouse = { x: null, y: null };
     window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
@@ -271,13 +295,11 @@
             a.y += a.vy; a.x += a.vx;
             if(a.y > c.height) a.y = 0; if(a.x > c.width) a.x = 0; if(a.x < 0) a.x = c.width;
             
-            // Mouse Repulsion Physics
             let dx = a.x - mouse.x, dy = a.y - mouse.y, dist = Math.sqrt(dx*dx + dy*dy);
             if(dist < 120) { a.x += dx/20; a.y += dy/20; }
             
             x.beginPath(); x.arc(a.x,a.y,1.5,0,6.28); x.fillStyle="rgba(96, 165, 250, 0.8)"; x.fill();
             
-            // Inter-particle Connection Physics
             p.forEach(b=>{
                 let d2 = Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2);
                 if(d2 < 100){
