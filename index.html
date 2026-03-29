@@ -101,22 +101,21 @@
         .offline { color: #ef4444; }
         .player-pill { background: rgba(59, 130, 246, 0.2); color: var(--blue-glow); padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; margin-left: 10px; font-weight: bold; border: 1px solid var(--blue-glow); }
 
-        @media (max-width: 850px) {
-            /* THIS IS THE NEW LINE: It forces the layout to stack vertically */
+       @media (max-width: 850px) {
             .main-layout { flex-direction: column; } 
             
             .sidebar { 
-                width: 100%; 
-                height: auto; 
-                position: sticky; 
-                top: 65px; 
-                flex-direction: row; 
-                overflow-x: auto; 
-                padding: 10px; 
-                box-sizing: border-box; /* Ensures padding doesn't break the 100% width */
-                z-index: 999; /* Keeps it floating above the server cards */
+                width: 100%; height: auto; position: sticky; top: 65px; 
+                flex-direction: row; overflow-x: auto; padding: 10px; 
+                box-sizing: border-box; z-index: 999;
             }
             .sidebar-title { display: none; }
+
+            /* NEW: Add this to keep the buttons from squishing */
+            .sidebar-link {
+                flex-shrink: 0; 
+                white-space: nowrap; 
+            }
         }
 
         footer { padding: 30px; background: rgba(15, 23, 42, 0.8); border-top: 1px solid #1e293b; text-align: center; }
