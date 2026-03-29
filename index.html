@@ -107,6 +107,33 @@
         }
 
         footer { padding: 30px; background: rgba(15, 23, 42, 0.8); border-top: 1px solid #1e293b; text-align: center; }
+
+        /* TOAST NOTIFICATION STYLES */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: rgba(15, 23, 42, 0.95);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            border: 1px solid var(--blue-glow);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+            font-weight: bold;
+            transition: opacity 0.3s, bottom 0.3s;
+            opacity: 0;
+            backdrop-filter: blur(10px);
+        }
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
     </style>
 </head>
 <body>
@@ -136,6 +163,8 @@
     <a href="https://api.rhysegaming.com" target="_blank" style="text-decoration: none; font-size: 24px;">⚙️</a>
 </div>
 
+<div id="toast"><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 8px;"></i>Copied connection string to clipboard!</div>
+
 <footer><p>&copy; 2026 <strong>Rhyse Gaming</strong>. All Rights Reserved.</p></footer>
 
 <script>
@@ -156,7 +185,9 @@
         link.onclick = (e) => {
             e.preventDefault();
             const card = document.getElementById(`${s.id}-card`);
-            card.classList.add('show-manual'); 
+            
+            // TWEAK 1: Changed .add to .toggle so the sidebar link works as an open/close switch
+            card.classList.toggle('show-manual'); 
             card.scrollIntoView({ behavior: 'smooth' });
             card.classList.add('highlight');
             setTimeout(() => { card.classList.remove('highlight'); }, 2000);
@@ -171,7 +202,7 @@
             <div id="${s.id}-status" style="padding: 20px 15px 5px; display: flex; align-items: center; justify-content: center;">Checking...</div>
             <div class="btn-group">
                 <button class="btn btn-play" onclick="launchGame('${s.queryPort}')"><i class="fas fa-rocket"></i> Play Now</button>
-                <button class="btn btn-manual" onclick="copyJoin('${s.gamePort}')"><i class="fas fa-terminal"></i> Manual</button>
+                <button class="btn btn-manual" onclick="copyJoin('${s.gamePort}')"><i class="fas fa-copy"></i> Copy IP</button>
             </div>
         `;
         container.appendChild(card);
@@ -181,8 +212,16 @@
         window.location.href = `steam://run/2399830//+connect%20ark.rhysegaming.com:${qPort}`; 
     }
 
+    // THE FIX FOR THE POPUP
     function copyJoin(gPort) { 
         navigator.clipboard.writeText(`open ark.rhysegaming.com:${gPort}`); 
+        showToast(); // Triggers the popup
+    }
+
+    function showToast() {
+        const toast = document.getElementById("toast");
+        toast.className = "show";
+        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
     }
 
     async function checkStatus(s) {
@@ -202,8 +241,15 @@
                 dot.classList.remove("online-dot");
                 statusEl.innerHTML = `<span class="offline">● Offline</span>`;
             }
+        // TWEAK 2: Added logic here to ensure offline styling strips the green borders
         } catch (err) { 
-            document.getElementById(`${s.id}-status`).innerHTML = `<span class="offline">● Offline</span>`;
+            const statusEl = document.getElementById(`${s.id}-status`);
+            const card = document.getElementById(`${s.id}-card`);
+            const dot = document.getElementById(`${s.id}-dot`);
+
+            card.classList.remove("online-card");
+            dot.classList.remove("online-dot");
+            statusEl.innerHTML = `<span class="offline">● Offline</span>`;
         }
     }
 
