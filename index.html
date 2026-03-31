@@ -110,8 +110,6 @@
                 box-sizing: border-box; z-index: 999;
             }
             .sidebar-title { display: none; }
-
-            /* NEW: Add this to keep the buttons from squishing */
             .sidebar-link {
                 flex-shrink: 0; 
                 white-space: nowrap; 
@@ -120,7 +118,6 @@
 
         footer { padding: 30px; background: rgba(15, 23, 42, 0.8); border-top: 1px solid #1e293b; text-align: center; }
 
-        /* TOAST NOTIFICATION STYLES */
         #toast {
             visibility: hidden;
             min-width: 250px;
@@ -205,8 +202,6 @@
         link.onclick = (e) => {
             e.preventDefault();
             const card = document.getElementById(`${s.id}-card`);
-            
-            // Toggle sidebar click behavior
             card.classList.toggle('show-manual'); 
             card.scrollIntoView({ behavior: 'smooth' });
             card.classList.add('highlight');
@@ -251,7 +246,8 @@
             const card = document.getElementById(`${s.id}-card`);
             const dot = document.getElementById(`${s.id}-dot`);
             
-            if (data.online) {
+            // LOGIC FIX: Check 'data.status' for the value "Online"
+            if (data.status === "Online") {
                 card.classList.add("online-card");
                 dot.classList.add("online-dot");
                 statusEl.innerHTML = `<span class="online">● Online</span> <span class="player-pill">${data.players || 0} Survivors</span>`;
@@ -275,13 +271,8 @@
     }
 
     async function refresh() { 
-        // Run all API checks simultaneously
         const results = await Promise.all(servers.map(s => checkStatus(s)));
-        
-        // Count the online servers
         const onlineCount = results.filter(status => status === true).length;
-        
-        // Toggle the offline message
         const offlineMsg = document.getElementById("offline-message");
         if (onlineCount === 0) {
             offlineMsg.style.display = "block";
