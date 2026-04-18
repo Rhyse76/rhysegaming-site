@@ -97,7 +97,7 @@
         <a href="http://100.67.222.11:3001" target="_blank" style="text-decoration: none; font-size: 24px;">⚙️</a>
     </div>
 
-    <script>
+   <script>
         const servers = [
             { name: "The Island (ASA)", id: "island", type: "Ascended", gamePort: 7777 },
             { name: "Astraeos (ASA)", id: "astra", type: "Ascended", gamePort: 7877 },
@@ -107,6 +107,19 @@
 
         const container = document.getElementById("servers");
         const sidebarContainer = document.getElementById("sidebar-links");
+        
+        // NEW: Function to handle copying and button feedback
+        function copyJoin(btn, port) {
+            navigator.clipboard.writeText(`open ark.rhysegaming.com:${port}`).then(() => {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                btn.style.background = '#22c55e'; // Turn green
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.style.background = ''; // Revert to normal
+                }, 2000);
+            });
+        }
         
         ["Ascended", "Evolved"].forEach(cat => {
             const header = document.createElement("div");
@@ -119,7 +132,6 @@
                 link.className = "sidebar-link";
                 link.innerHTML = `<span>${s.name}</span> <div class="status-dot" id="${s.id}-dot"></div>`;
                 
-                // RESTORED: Toggle functionality and highlight animation
                 link.onclick = (e) => { 
                     e.preventDefault(); 
                     const card = document.getElementById(`${s.id}-card`);
@@ -134,14 +146,14 @@
                 sidebarContainer.appendChild(link);
 
                 const card = document.createElement("div");
-                card.className = "card"; // Starts hidden, CSS controls display
+                card.className = "card"; 
                 card.id = `${s.id}-card`;
                 card.innerHTML = `
                     <div class="banner ${s.id}"><h2>${s.name}</h2></div>
                     <div id="${s.id}-status" style="padding: 20px 15px 5px; text-align: center;">Checking...</div>
                     <div class="btn-group">
                         ${s.type === 'Ascended' ? `<button class="btn btn-play" onclick="window.location.href='steam://run/2399830//+connect%20ark.rhysegaming.com:${s.gamePort}'"><i class="fas fa-rocket"></i> Play</button>` : ''}
-                        <button class="btn btn-manual" onclick="navigator.clipboard.writeText('open ark.rhysegaming.com:${s.gamePort}')"><i class="fas fa-copy"></i> IP</button>
+                        <button class="btn btn-manual" onclick="copyJoin(this, '${s.gamePort}')"><i class="fas fa-copy"></i> Address</button>
                     </div>`;
                 container.appendChild(card);
             });
@@ -150,8 +162,11 @@
         async function checkStatus() {
             try {
                 const r = await fetch('https://api.rhysegaming.com/api/public-stats');
+                if (!r.ok) throw new Error("Network response was not ok");
+                
                 const serverList = await r.json();
                 let onlineCount = 0;
+                
                 serverList.forEach(data => {
                     const s = servers.find(sv => sv.id === data.id);
                     if (!s) return;
@@ -160,7 +175,6 @@
                     const dot = document.getElementById(`${s.id}-dot`);
                     const statusEl = document.getElementById(`${s.id}-status`);
                     
-                    // No more JS forced styles! Just toggling classes as intended.
                     if (data.online) {
                         onlineCount++;
                         card.classList.add("online-card");
@@ -172,10 +186,22 @@
                         statusEl.innerHTML = `<span class="offline">● Offline</span>`;
                     }
                 });
+                
                 document.getElementById("offline-message").style.display = onlineCount === 0 ? "block" : "none";
+                
             } catch (err) { 
-                console.error(err); 
+                console.error("Fetch failed:", err); 
                 document.getElementById("offline-message").style.display = "block";
+                
+                servers.forEach(s => {
+                    const statusEl = document.getElementById(`${s.id}-status`);
+                    const card = document.getElementById(`${s.id}-card`);
+                    const dot = document.getElementById(`${s.id}-dot`);
+                    
+                    if (statusEl) statusEl.innerHTML = `<span class="offline">● Offline</span>`;
+                    if (card) card.classList.remove("online-card");
+                    if (dot) dot.classList.remove("online-dot");
+                });
             }
         }
 
