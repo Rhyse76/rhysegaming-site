@@ -53,6 +53,18 @@
         .online { color: #22c55e; font-weight: bold; }
         .offline { color: #ef4444; }
         .player-pill { background: rgba(59, 130, 246, 0.2); color: var(--blue-glow); padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; margin-left: 10px; }
+
+        /* FIX 3: RESTORED YOUR MOBILE SIDEBAR CSS */
+        @media (max-width: 850px) {
+            .main-layout { flex-direction: column; } 
+            .sidebar { 
+                width: 100%; height: auto; position: sticky; top: 65px; 
+                flex-direction: row; overflow-x: auto; padding: 10px; 
+                box-sizing: border-box; z-index: 999;
+            }
+            .sidebar-title { display: none; }
+            .sidebar-link { flex-shrink: 0; white-space: nowrap; }
+        }
     </style>
 </head>
 <body>
@@ -98,7 +110,15 @@
                 const link = document.createElement("a");
                 link.className = "sidebar-link";
                 link.innerHTML = `<span>${s.name}</span> <div class="status-dot" id="${s.id}-dot"></div>`;
-                link.onclick = (e) => { e.preventDefault(); document.getElementById(`${s.id}-card`).scrollIntoView({ behavior: 'smooth' }); };
+                
+                // FIX 4: FORCE CARD TO SHOW ON CLICK
+                link.onclick = (e) => { 
+                    e.preventDefault(); 
+                    const card = document.getElementById(`${s.id}-card`);
+                    card.style.display = "block"; 
+                    card.scrollIntoView({ behavior: 'smooth' }); 
+                };
+
                 sidebarContainer.appendChild(link);
 
                 const card = document.createElement("div");
