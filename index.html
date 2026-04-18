@@ -28,14 +28,23 @@
         .sidebar-link { padding: 12px 15px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: white; border: 1px solid transparent; }
         .sidebar-link:hover { background: rgba(59, 130, 246, 0.1); border-color: var(--blue-glow); }
         
-        .status-dot { height: 8px; width: 8px; border-radius: 50%; background: #ef4444; }
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; background: #ef4444; transition: 0.3s; }
         .status-dot.online-dot { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
 
         .content { flex: 1; padding: 40px 20px; text-align: center; }
         .logo-container img { width: 220px; animation: glowPulse 3s infinite ease-in-out; }
         @keyframes glowPulse { 0%, 100% { filter: drop-shadow(0 0 10px var(--blue-glow)); transform: scale(1); } 50% { filter: drop-shadow(0 0 25px var(--blue-glow)); transform: scale(1.02); } }
 
-        .card { display: none; max-width: 600px; margin: 0 auto 30px; border-radius: 15px; background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden; }
+        /* THE CSS FIX: Restored your elegant visibility logic */
+        .card { 
+            display: none; 
+            max-width: 600px; margin: 0 auto 30px; border-radius: 15px; 
+            background: var(--card-bg); backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden; 
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .card.online-card, .card.show-manual { display: block; }
+        .card.highlight { border-color: var(--blue-glow); box-shadow: 0 0 30px rgba(59, 130, 246, 0.4); }
         .online-card { border-left: 4px solid #22c55e; }
 
         .banner { height: 140px; display: flex; align-items: flex-end; padding: 20px; background-size: cover; background-position: center; }
@@ -52,9 +61,8 @@
 
         .online { color: #22c55e; font-weight: bold; }
         .offline { color: #ef4444; }
-        .player-pill { background: rgba(59, 130, 246, 0.2); color: var(--blue-glow); padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; margin-left: 10px; }
+        .player-pill { background: rgba(59, 130, 246, 0.2); color: var(--blue-glow); padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; margin-left: 10px; border: 1px solid var(--blue-glow); }
 
-        /* FIX 3: RESTORED YOUR MOBILE SIDEBAR CSS */
         @media (max-width: 850px) {
             .main-layout { flex-direction: column; } 
             .sidebar { 
@@ -81,7 +89,7 @@
             <div id="offline-message" class="card" style="display:none; padding: 40px; text-align: center; border-left: 4px solid #ef4444; margin-top: 20px;">
                 <i class="fas fa-exclamation-triangle fa-3x" style="color: #ef4444; margin-bottom: 15px;"></i>
                 <h3>Cluster is Currently Offline</h3>
-                <p style="color: #94a3b8;">The ARK cluster is down for maintenance or updates.</p>
+                <p style="color: #94a3b8;">The ARK cluster is down for maintenance or updates.<br>Click a server on the left to view details.</p>
             </div>
         </div>
     </div>
@@ -111,18 +119,22 @@
                 link.className = "sidebar-link";
                 link.innerHTML = `<span>${s.name}</span> <div class="status-dot" id="${s.id}-dot"></div>`;
                 
-                // FIX 4: FORCE CARD TO SHOW ON CLICK
+                // RESTORED: Toggle functionality and highlight animation
                 link.onclick = (e) => { 
                     e.preventDefault(); 
                     const card = document.getElementById(`${s.id}-card`);
-                    card.style.display = "block"; 
-                    card.scrollIntoView({ behavior: 'smooth' }); 
+                    card.classList.toggle('show-manual');
+                    if (card.classList.contains('show-manual') || card.classList.contains('online-card')) {
+                        card.scrollIntoView({ behavior: 'smooth' });
+                        card.classList.add('highlight');
+                        setTimeout(() => { card.classList.remove('highlight'); }, 2000);
+                    }
                 };
 
                 sidebarContainer.appendChild(link);
 
                 const card = document.createElement("div");
-                card.className = "card";
+                card.className = "card"; // Starts hidden, CSS controls display
                 card.id = `${s.id}-card`;
                 card.innerHTML = `
                     <div class="banner ${s.id}"><h2>${s.name}</h2></div>
@@ -143,22 +155,28 @@
                 serverList.forEach(data => {
                     const s = servers.find(sv => sv.id === data.id);
                     if (!s) return;
+                    
                     const card = document.getElementById(`${s.id}-card`);
                     const dot = document.getElementById(`${s.id}-dot`);
                     const statusEl = document.getElementById(`${s.id}-status`);
+                    
+                    // No more JS forced styles! Just toggling classes as intended.
                     if (data.online) {
                         onlineCount++;
-                        card.style.display = "block";
                         card.classList.add("online-card");
                         dot.classList.add("online-dot");
-                        statusEl.innerHTML = `<span class="online">● Online</span> <span class="player-pill">${data.players} Survivors</span>`;
+                        statusEl.innerHTML = `<span class="online">● Online</span> <span class="player-pill">${data.players || 0} Survivors</span>`;
                     } else {
-                        card.style.display = "none";
+                        card.classList.remove("online-card");
                         dot.classList.remove("online-dot");
+                        statusEl.innerHTML = `<span class="offline">● Offline</span>`;
                     }
                 });
                 document.getElementById("offline-message").style.display = onlineCount === 0 ? "block" : "none";
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error(err); 
+                document.getElementById("offline-message").style.display = "block";
+            }
         }
 
         checkStatus(); setInterval(checkStatus, 30000);
