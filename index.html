@@ -52,6 +52,7 @@
         .astra { background: linear-gradient(transparent, #0f172a), url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa'); }
         .rag { background: linear-gradient(transparent, #0f172a), url('https://images.unsplash.com/photo-1508766206392-8bd5cf550d1c'); }
         .switch { background: linear-gradient(transparent, #0f172a), url('https://images.unsplash.com/photo-1542751371-adc38448a05e'); }
+        .tbd { background: linear-gradient(transparent, #0f172a), url('https://images.unsplash.com/photo-1516026672322-bc52d61a9df8'); }
 
         .btn-group { padding: 15px; display: flex; justify-content: center; gap: 10px; }
         .btn { padding: 10px 18px; border-radius: 8px; color: white; cursor: pointer; border: none; font-weight: bold; }
@@ -116,7 +117,8 @@
             { name: "The Island (ASA)", id: "island", type: "Ascended", gamePort: 7777 },
             { name: "Astraeos (ASA)", id: "astra", type: "Ascended", gamePort: 7877 },
             { name: "Ragnarok (ASA)", id: "rag", type: "Ascended", gamePort: 7977 },
-            { name: "The Island (ASE) (Switch)", id: "switch", type: "Evolved", gamePort: 0 }
+            { name: "The Tribe of Bad Decisions", id: "tbd", type: "Ascended", isNitrado: true },
+            { name: "The Island (ASE) (Switch)", id: "switch", type: "Evolved", isNitrado: true }
         ];
 
         const container = document.getElementById("servers");
@@ -165,10 +167,10 @@
                 card.innerHTML = `
                     <div class="banner ${s.id}"><h2>${s.name}</h2></div>
                     <div id="${s.id}-status" style="padding: 20px 15px 5px; text-align: center;">Checking...</div>
-                    <div class="btn-group">
+                    ${!s.isNitrado ? `<div class="btn-group">
                         ${s.type === 'Ascended' ? `<button class="btn btn-play" onclick="window.location.href='steam://run/2399830//+connect%20ark.rhysegaming.com:${s.gamePort}'"><i class="fas fa-rocket"></i> Play</button>` : ''}
                         <button class="btn btn-manual" onclick="copyJoin(this, '${s.gamePort}')"><i class="fas fa-copy"></i> Address</button>
-                    </div>`;
+                    </div>` : ''}`;
                 container.appendChild(card);
             });
         });
