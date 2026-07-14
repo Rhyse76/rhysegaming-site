@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RhyseGaming Server Manager | Rhyse Gaming</title>
+    <meta name="description" content="A clean, modern, all-in-one desktop app for running Palworld, ARK: Survival Ascended, or Enshrouded dedicated servers on Windows — install, configure, monitor, back up, and automate. Free.">
+    <link rel="canonical" href="https://rhysegaming.com/servermanager/">
+    <link rel="icon" href="../logo.png">
+
+    <!-- Open Graph (rich preview on Discord, Reddit, Facebook, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Rhyse Gaming">
+    <meta property="og:url" content="https://rhysegaming.com/servermanager/">
+    <meta property="og:title" content="RhyseGaming Server Manager — free Windows app">
+    <meta property="og:description" content="Install, configure, monitor, back up, and automate your Palworld, ARK: Survival Ascended, or Enshrouded dedicated server — all from one clean desktop app. Free.">
+    <meta property="og:image" content="https://rhysegaming.com/servermanager/img/og.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="RhyseGaming Server Manager — free Windows app">
+    <meta name="twitter:description" content="Install, configure, monitor, back up, and automate your Palworld, ARK: Survival Ascended, or Enshrouded dedicated server — all from one clean desktop app.">
+    <meta name="twitter:image" content="https://rhysegaming.com/servermanager/img/og.png">
+
+    <!-- Structured data: helps Google understand it's a downloadable app -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "RhyseGaming Server Manager",
+      "operatingSystem": "Windows 10, Windows 11",
+      "applicationCategory": "GameApplication",
+      "description": "An all-in-one desktop app for running Palworld, ARK: Survival Ascended, or Enshrouded dedicated servers: one-click install/update, full config editor, live dashboard, backups, and automation with crash recovery.",
+      "url": "https://rhysegaming.com/servermanager/",
+      "downloadUrl": "https://github.com/Rhyse76/palworld-server-manager/releases/latest",
+      "softwareVersion": "0.4.5",
+      "image": "https://rhysegaming.com/servermanager/img/og.png",
+      "author": { "@type": "Organization", "name": "Rhyse Gaming", "url": "https://rhysegaming.com" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --blue-primary: #2563eb;
+            --blue-glow: #3b82f6;
+            --teal: #33c9a3;
+            --teal-glow: #45dbb5;
+            --bg-dark: #020617;
+            --card-bg: rgba(15, 23, 42, 0.7);
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: radial-gradient(circle at center, var(--bg-dark), #000); color: #e6edf3; min-height: 100vh; overflow-x: hidden; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none; }
+        a { color: var(--teal-glow); }
+
+        nav { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 10000; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-logo { font-weight: bold; font-size: 1.2rem; color: var(--blue-glow); text-decoration: none; letter-spacing: 1px; }
+        .btn { padding: 10px 18px; border-radius: 8px; color: white; cursor: pointer; border: none; font-weight: bold; font-size: 0.95rem; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .btn-contact { background: var(--blue-primary); }
+        .btn-discord { background: #5865F2; }
+        .btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
+
+        .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+        /* Hero */
+        .hero { text-align: center; padding: 70px 20px 40px; }
+        .app-mark { margin-bottom: 10px; }
+        .app-mark img { width: 220px; height: auto; animation: glowPulse 3s infinite ease-in-out; }
+        @keyframes glowPulse { 0%, 100% { filter: drop-shadow(0 0 10px var(--teal-glow)); transform: scale(1); } 50% { filter: drop-shadow(0 0 25px var(--teal-glow)); transform: scale(1.02); } }
+        .hero h1 { font-size: 2.6rem; margin: 0 0 10px; }
+        .hero .accent { color: var(--teal-glow); }
+        .hero p.tag { font-size: 1.2rem; color: #94a3b8; max-width: 640px; margin: 0 auto 28px; line-height: 1.5; }
+        .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+        .btn-download { background: var(--teal); color: #08110d; padding: 15px 28px; font-size: 1.05rem; }
+        .btn-support { background: rgba(255,255,255,0.06); border: 1px solid var(--teal); color: var(--teal-glow); padding: 15px 28px; font-size: 1.05rem; }
+        .hero .meta { margin-top: 18px; color: #64748b; font-size: 0.9rem; }
+        .hero .meta i { color: var(--teal); }
+
+        /* Sections */
+        section { padding: 40px 0; }
+        h2.section-title { text-align: center; font-size: 1.9rem; margin: 0 0 8px; }
+        p.section-sub { text-align: center; color: #94a3b8; max-width: 640px; margin: 0 auto 34px; line-height: 1.6; }
+
+        .why { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 34px; line-height: 1.7; color: #cbd5e1; }
+        .why h2 { margin-top: 0; color: #fff; }
+
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .feature { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 24px; }
+        .feature i { font-size: 1.6rem; color: var(--teal); margin-bottom: 12px; }
+        .feature h3 { margin: 0 0 8px; font-size: 1.1rem; }
+        .feature p { margin: 0; color: #94a3b8; font-size: 0.92rem; line-height: 1.5; }
+
+        .shots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .shot { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+        .shot:hover { border-color: var(--teal); transform: translateY(-2px); }
+        .shot img { width: 100%; display: block; }
+        .shot .cap { padding: 12px 16px; color: #cbd5e1; font-size: 0.9rem; }
+
+        .download-box { text-align: center; background: var(--card-bg); border: 1px solid var(--teal); border-radius: 16px; padding: 40px 30px; box-shadow: 0 0 40px rgba(51,201,163,0.12); }
+        .req { color: #94a3b8; font-size: 0.9rem; margin-top: 20px; line-height: 1.8; }
+        .note { background: rgba(227,179,65,0.1); border: 1px solid rgba(227,179,65,0.35); color: #e3b341; border-radius: 10px; padding: 14px 18px; margin: 22px auto 0; max-width: 560px; font-size: 0.9rem; line-height: 1.5; text-align: left; }
+
+        .contact-cta { text-align: center; }
+        .contact-cta .btn { font-size: 1rem; padding: 14px 26px; }
+
+        footer { padding: 40px 20px; background: rgba(2,6,23,0.8); border-top: 1px solid rgba(255,255,255,0.05); text-align: center; margin-top: 30px; }
+        .copyright { font-size: 0.9rem; color: #64748b; }
+        .copyright span { color: var(--blue-glow); }
+        .disclaimer { font-size: 0.78rem; color: #475569; max-width: 620px; margin: 14px auto 0; line-height: 1.5; }
+
+        /* Lightbox */
+        .lb { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 99999; align-items: center; justify-content: center; padding: 30px; }
+        .lb.open { display: flex; }
+        .lb img { max-width: 95%; max-height: 92%; border-radius: 10px; box-shadow: 0 0 60px rgba(0,0,0,0.6); }
+        .lb .x { position: fixed; top: 20px; right: 30px; color: #fff; font-size: 2rem; cursor: pointer; }
+
+        @media (max-width: 800px) {
+            .features { grid-template-columns: 1fr; }
+            .shots { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles"></canvas>
+
+    <nav>
+        <a href="../index.html" class="nav-logo">RHYSE GAMING</a>
+        <div style="display:flex; gap:10px;">
+            <a class="btn btn-contact" href="../contact.html"><i class="fas fa-envelope"></i> Contact</a>
+            <a class="btn btn-discord" href="https://discord.gg/xJM3Nkce8Y" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="app-mark">
+            <img src="../logo.png" alt="Rhyse Gaming">
+        </div>
+        <h1>RhyseGaming <span class="accent">Server Manager</span></h1>
+        <p class="tag">A clean, modern, all-in-one desktop app for running your own Palworld, ARK: Survival Ascended, or Enshrouded dedicated server — install, configure, monitor, back up, and automate it, all from one window.</p>
+        <div class="hero-btns">
+            <a class="btn btn-download" href="https://github.com/Rhyse76/palworld-server-manager/releases/latest/download/RhyseGamingServerManager-Setup.exe">
+                <i class="fab fa-windows"></i> Download for Windows
+            </a>
+            <a class="btn btn-support" href="https://ko-fi.com/rhyse76" target="_blank"><i class="fas fa-heart"></i> Support the project</a>
+        </div>
+        <div class="meta"><i class="fas fa-check"></i> Free &nbsp;·&nbsp; <i class="fas fa-check"></i> Windows 10/11 &nbsp;·&nbsp; <i class="fas fa-check"></i> 3 games, 1 app</div>
+    </div>
+
+    <div class="wrap">
+        <!-- WHY -->
+        <section>
+            <div class="why">
+                <h2>Why I built this</h2>
+                <p>Running a dedicated server shouldn't mean hand-editing giant config files, hunting for SteamCMD commands, and babysitting crashes. I tried the existing tools for Palworld, ARK, and Enshrouded — most are abandoned, clunky, single-game, or have broken features — so I built the manager I actually wanted to use, and kept adding games to it.</p>
+                <p>The goal is simple: everything you need to run a healthy server in one clean, fast app, whichever of the three games you're hosting. Point-and-click install, a real settings editor, live dashboards where the game supports them, automatic backups, and a crash watchdog that quietly restarts your server if it falls over. It's free, and it's built by someone who runs game servers too.</p>
+            </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section>
+            <h2 class="section-title">Everything in one place</h2>
+            <p class="section-sub">No more spreadsheets of commands or half-broken panels.</p>
+            <div class="features">
+                <div class="feature"><i class="fas fa-gamepad"></i><h3>Palworld, ARK: SA &amp; Enshrouded</h3><p>One app, three games — pick a game per server profile and the manager adapts its config, mods, and live control to fit.</p></div>
+                <div class="feature"><i class="fas fa-download"></i><h3>Install &amp; auto-update</h3><p>Bootstraps SteamCMD and installs the server for you — plus auto-detects and gracefully applies new game versions.</p></div>
+                <div class="feature"><i class="fas fa-sliders-h"></i><h3>Full config editor</h3><p>Every setting for your game — Palworld's OptionSettings, ARK's GameUserSettings/Game.ini, or Enshrouded's JSON — as friendly toggles and inputs, with search.</p></div>
+                <div class="feature"><i class="fas fa-chart-line"></i><h3>Live dashboard</h3><p>Who's online, server FPS/uptime with live graphs, broadcast, and kick / ban / unban in real time — for Palworld (REST) and ARK: SA (RCON).</p></div>
+                <div class="feature"><i class="fas fa-save"></i><h3>Backups &amp; off-site copy</h3><p>One-click world snapshots and restore — and mirror every backup to a cloud-synced folder for off-site safety.</p></div>
+                <div class="feature"><i class="fas fa-robot"></i><h3>Automation</h3><p>Scheduled restarts (smart: wait until empty), scheduled backups, a crash watchdog, and recurring announcements.</p></div>
+                <div class="feature"><i class="fab fa-discord"></i><h3>Discord notifications</h3><p>Post server up/down/crash, player join/leave, and backup events straight to your Discord channel.</p></div>
+                <div class="feature"><i class="fas fa-network-wired"></i><h3>Connectivity helper</h3><p>Shows your public connect address and opens the game port automatically via UPnP — the "my friends can't join" fix.</p></div>
+                <div class="feature"><i class="fas fa-puzzle-piece"></i><h3>Mod manager</h3><p>Install and manage Palworld <code>.pak</code> mods or search and add ARK's CurseForge mods — no digging through folders.</p></div>
+                <div class="feature"><i class="fas fa-server"></i><h3>Multi-server profiles</h3><p>Manage several servers, even across different games, and switch between them instantly.</p></div>
+            </div>
+        </section>
+
+        <!-- SCREENSHOTS -->
+        <section>
+            <h2 class="section-title">Take a look</h2>
+            <p class="section-sub">Shown here running Palworld — the same app manages ARK: Survival Ascended and Enshrouded servers too. Click any screenshot to enlarge.</p>
+            <div class="shots">
+                <div class="shot" onclick="openLb('img/PAL_Server.PNG')"><img src="img/PAL_Server.PNG" alt="Server page" loading="lazy"><div class="cap">Install, update &amp; control your server</div></div>
+                <div class="shot" onclick="openLb('img/PAL_Dashboard.PNG')"><img src="img/PAL_Dashboard.PNG" alt="Dashboard" loading="lazy"><div class="cap">Live dashboard — players, metrics graphs, kick / ban / unban</div></div>
+                <div class="shot" onclick="openLb('img/PAL_Configurations.PNG')"><img src="img/PAL_Configurations.PNG" alt="Configuration" loading="lazy"><div class="cap">Full settings editor — every option, searchable</div></div>
+                <div class="shot" onclick="openLb('img/PAL_Connect.PNG')"><img src="img/PAL_Connect.PNG" alt="Connectivity" loading="lazy"><div class="cap">Connectivity helper — connect address &amp; one-click UPnP</div></div>
+                <div class="shot" onclick="openLb('img/PAL_Automation.PNG')"><img src="img/PAL_Automation.PNG" alt="Automation" loading="lazy"><div class="cap">Automation — restarts, backups, crash recovery, announcements</div></div>
+                <div class="shot" onclick="openLb('img/PAL_Backups.PNG')"><img src="img/PAL_Backups.PNG" alt="Backups" loading="lazy"><div class="cap">One-click backups &amp; restore, with off-site copy</div></div>
+                <div class="shot" onclick="openLb('img/PAL_Mods.PNG')"><img src="img/PAL_Mods.PNG" alt="Mod manager" loading="lazy"><div class="cap">Mod manager — install, enable &amp; disable .pak mods</div></div>
+                <div class="shot" onclick="openLb('img/PAL_SaveTools.PNG')"><img src="img/PAL_SaveTools.PNG" alt="Save tools" loading="lazy"><div class="cap">Save tools — read your world save (editing coming)</div></div>
+            </div>
+        </section>
+
+        <!-- DOWNLOAD -->
+        <section>
+            <div class="download-box">
+                <h2 class="section-title" style="margin-bottom:16px;">Get it now</h2>
+                <a class="btn btn-download" href="https://github.com/Rhyse76/palworld-server-manager/releases/latest/download/RhyseGamingServerManager-Setup.exe">
+                    <i class="fab fa-windows"></i> Download for Windows
+                </a>
+                <div class="req">
+                    Windows 10 / 11 (64-bit) &nbsp;·&nbsp; ~7 MB installer &nbsp;·&nbsp; v0.4.5<br>
+                    You do <strong>not</strong> need to own the game — each dedicated server is a free download.
+                </div>
+                <div class="note">
+                    <i class="fas fa-shield-alt"></i> <strong>Heads up:</strong> the installer isn't code-signed yet, so Windows SmartScreen may warn you. Click <strong>More info → Run anyway</strong>. (Working on signing it.)
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section class="contact-cta">
+            <h2 class="section-title">Found a bug or have an idea?</h2>
+            <p class="section-sub">This is actively maintained — I'd love your feedback. Reach out and I'll take a look.</p>
+            <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+                <a class="btn btn-contact" href="../contact.html"><i class="fas fa-envelope"></i> Contact me</a>
+                <a class="btn btn-discord" href="https://discord.gg/xJM3Nkce8Y" target="_blank"><i class="fab fa-discord"></i> Join the Discord</a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p class="copyright">&copy; <span>2026</span> <strong>Rhyse Gaming</strong>. All Rights Reserved. &nbsp;&middot;&nbsp; <a href="/servermanager/privacy" style="color: var(--blue-glow); text-decoration: none;">Privacy Policy</a></p>
+        <p class="disclaimer">RhyseGaming Server Manager is an unofficial, community-made tool and is not affiliated with or endorsed by Pocketpair, Inc., Studio Wildcard, or Keen Games GmbH. &ldquo;Palworld,&rdquo; &ldquo;ARK: Survival Ascended,&rdquo; and &ldquo;Enshrouded&rdquo; are trademarks of their respective owners.</p>
+    </footer>
+
+    <!-- Lightbox -->
+    <div class="lb" id="lb" onclick="closeLb()">
+        <span class="x">&times;</span>
+        <img id="lb-img" src="" alt="">
+    </div>
+
+    <script>
+        function openLb(src){ document.getElementById('lb-img').src = src; document.getElementById('lb').classList.add('open'); }
+        function closeLb(){ document.getElementById('lb').classList.remove('open'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+
+        // Particle background (matches the main site)
+        const c = document.getElementById('particles'); const x = c.getContext('2d');
+        let p = []; let mouse = { x: null, y: null };
+        window.addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
+        window.onresize = () => { c.width = innerWidth; c.height = innerHeight; };
+        c.width = innerWidth; c.height = innerHeight;
+        for (let i = 0; i < 70; i++) p.push({ x: Math.random()*c.width, y: Math.random()*c.height, vx: (Math.random()-0.5)*0.3, vy: 0.5 });
+        function draw(){
+            x.clearRect(0,0,c.width,c.height);
+            p.forEach(a => {
+                a.y += a.vy; a.x += a.vx;
+                if (a.y > c.height) a.y = 0; if (a.x > c.width) a.x = 0; if (a.x < 0) a.x = c.width;
+                let dx = a.x - mouse.x, dy = a.y - mouse.y, dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 120) { a.x += dx/20; a.y += dy/20; }
+                x.beginPath(); x.arc(a.x, a.y, 1.5, 0, 6.28); x.fillStyle = "rgba(51, 201, 163, 0.7)"; x.fill();
+                p.forEach(b => {
+                    let d2 = Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2);
+                    if (d2 < 100) { x.strokeStyle = `rgba(51, 201, 163, ${1 - d2/100 * 0.35})`; x.lineWidth = 0.5; x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x, b.y); x.stroke(); }
+                });
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>
