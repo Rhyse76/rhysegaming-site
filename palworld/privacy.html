@@ -1,128 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Privacy Policy — Server Manager for Palworld (Unofficial)</title>
-  <meta name="description" content="Privacy policy for Server Manager for Palworld (Unofficial), a free desktop app by Rhyse Gaming. The app collects no personal data." />
-  <meta name="robots" content="index, follow" />
-  <style>
-    :root {
-      --bg: #020617;
-      --card: rgba(15, 23, 42, 0.7);
-      --border: rgba(255, 255, 255, 0.08);
-      --text: #e2e8f0;
-      --dim: #94a3b8;
-      --accent: #3b82f6;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", system-ui, Arial, sans-serif;
-      background: radial-gradient(circle at 50% -10%, #0b1220, var(--bg));
-      color: var(--text);
-      line-height: 1.7;
-      min-height: 100vh;
-    }
-    .wrap { max-width: 820px; margin: 0 auto; padding: 48px 22px 80px; }
-    .back { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
-    .back:hover { text-decoration: underline; }
-    h1 { font-size: 2rem; margin: 18px 0 4px; }
-    h2 { font-size: 1.2rem; margin: 34px 0 8px; color: #fff; }
-    .updated { color: var(--dim); font-size: 0.9rem; margin-bottom: 8px; }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 22px 26px;
-      backdrop-filter: blur(10px);
-      margin-top: 22px;
-    }
-    .lead { font-size: 1.05rem; }
-    a { color: var(--accent); }
-    ul { padding-left: 20px; }
-    li { margin: 6px 0; }
-    code { background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 5px; font-size: 0.9em; }
-    .foot { color: var(--dim); font-size: 0.85rem; margin-top: 40px; border-top: 1px solid var(--border); padding-top: 18px; }
-    .pill { display: inline-block; background: rgba(59,130,246,0.15); color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 2px 12px; font-size: 0.8rem; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — RhyseGaming Server Manager</title>
+    <meta name="description" content="This page has moved to /servermanager/privacy — RhyseGaming Server Manager's privacy policy, covering Palworld, ARK: Survival Ascended, and Enshrouded.">
+    <link rel="canonical" href="https://rhysegaming.com/servermanager/privacy">
+    <meta name="robots" content="noindex, follow">
+    <meta http-equiv="refresh" content="0; url=https://rhysegaming.com/servermanager/privacy">
+    <link rel="icon" href="../logo.png">
+    <style>
+        body { margin: 0; min-height: 100vh; display: grid; place-items: center; font-family: 'Segoe UI', Arial, sans-serif; background: radial-gradient(circle at center, #020617, #000); color: #e6edf3; }
+        a { color: #45dbb5; }
+    </style>
 </head>
 <body>
-  <div class="wrap">
-    <a class="back" href="/palworld">← Back to Server Manager for Palworld</a>
-    <h1>Privacy Policy</h1>
-    <p class="updated">Server Manager for Palworld (Unofficial) · Last updated: July 7, 2026</p>
-    <span class="pill">Short version: the app collects nothing about you.</span>
-
-    <div class="card">
-      <p class="lead">
-        Server Manager for Palworld (Unofficial) (the “App”) is a free desktop application published
-        by Rhyse Gaming. It runs entirely on your own computer to install, configure, run, and back up
-        a Palworld dedicated server. <strong>The App does not collect, store, or transmit any personal
-        information to us or to any analytics or advertising service.</strong> We operate no servers
-        that receive your data, and there are no accounts, logins, tracking, or telemetry.
-      </p>
-
-      <h2>Information we collect</h2>
-      <p>
-        None. We (Rhyse Gaming) do not receive any data from the App. Everything you configure —
-        server settings, profiles, backups, and the App’s activity log — is stored locally on your own
-        device and is never sent to us.
-      </p>
-
-      <h2>Network connections the App makes</h2>
-      <p>
-        To do its job, the App connects to a few external services. These requests go directly from
-        your computer to those services — not through us — and carry no personal information beyond
-        what each request technically requires:
-      </p>
-      <ul>
-        <li><strong>Your public IP address</strong> is looked up via <a href="https://www.ipify.org" target="_blank" rel="noopener">ipify</a> so the App can show you the address friends use to connect. This is only requested when you open the Connectivity page.</li>
-        <li><strong>Discord</strong> — only if you choose to add a Discord webhook. If you do, the App posts server events (up/down/crash, player join/leave, backups) to the Discord channel you configured. This is entirely opt-in and goes to your own Discord.</li>
-        <li><strong>App updates</strong> are checked and downloaded from <a href="https://github.com" target="_blank" rel="noopener">GitHub</a> (our release host).</li>
-        <li><strong>The Palworld server files</strong> are downloaded and updated from Valve’s <strong>Steam / SteamCMD</strong> service, and the App may query <a href="https://api.steamcmd.net" target="_blank" rel="noopener">steamcmd.net</a> to see whether a newer server build is available.</li>
-        <li><strong>Your local network router</strong> may be contacted over UPnP if you use the one-click port-forwarding helper. This stays on your local network.</li>
-        <li><strong>Your local Palworld server</strong> is contacted on your own machine (its REST API and/or RCON) to show live status and let you manage players. This is local, machine-to-machine communication.</li>
-      </ul>
-      <p>
-        Each third-party service handles data under its own privacy policy — see
-        <a href="https://www.ipify.org" target="_blank" rel="noopener">ipify</a>,
-        <a href="https://discord.com/privacy" target="_blank" rel="noopener">Discord</a>,
-        <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">GitHub</a>, and
-        <a href="https://store.steampowered.com/privacy_agreement/" target="_blank" rel="noopener">Valve/Steam</a>.
-      </p>
-
-      <h2>Data storage and security</h2>
-      <p>
-        All data the App creates — configuration, server profiles, world backups, and activity logs —
-        is stored locally on your device (for example under your user’s application-data folder). You
-        can view, export, or delete it at any time. Because nothing is sent to us, you remain in full
-        control of your data.
-      </p>
-
-      <h2>Children’s privacy</h2>
-      <p>
-        The App is a server-administration tool and is not directed at children. It does not knowingly
-        collect any information from anyone, including children under 13.
-      </p>
-
-      <h2>Changes to this policy</h2>
-      <p>
-        If this policy changes, we will update this page and revise the “Last updated” date above.
-      </p>
-
-      <h2>Contact</h2>
-      <p>
-        Questions about this policy? Reach us at
-        <a href="mailto:roy@patchworklabs.dev">roy@patchworklabs.dev</a>
-        or via <a href="/contact">rhysegaming.com/contact</a>.
-      </p>
-
-      <p class="foot">
-        Server Manager for Palworld (Unofficial) is a community-made tool. It is not affiliated with,
-        endorsed by, or sponsored by Pocketpair, Inc. “Palworld” is a trademark of its respective owner.
-      </p>
-    </div>
-  </div>
+    <p>This page has moved — redirecting to <a href="https://rhysegaming.com/servermanager/privacy">rhysegaming.com/servermanager/privacy</a>…</p>
 </body>
 </html>
